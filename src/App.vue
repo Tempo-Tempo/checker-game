@@ -1,4 +1,7 @@
 <template>
+  <div class="task">1. Ломается очередность хода, если кликать несколько раз не в свою шашку
+    2. Ограничить места в которые могут сходить шашки и эти же места подсвечивать
+  </div>
   <mainPage> </mainPage>
 </template>
 
@@ -28,5 +31,9 @@ export default {
 
 body {
   margin:  0px;;
+}
+
+.task {
+  font-size: 25px;
 }
 </style>

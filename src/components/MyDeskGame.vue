@@ -11,6 +11,7 @@
         @click.stop="turnBlack(checkerCell)"
         v-if="checkerCell.black"
         class="chekcer"
+        :class="{ pick_checker: checkerCell.pick }"
       >
         O
       </div>
@@ -18,6 +19,7 @@
         @click.stop="turnWhite(checkerCell)"
         v-if="checkerCell.white"
         class="chekcer"
+        :class="{ pick_checker: checkerCell.pick }"
       >
         X
       </div>
@@ -37,6 +39,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 1,
@@ -44,6 +47,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 1,
@@ -51,6 +55,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 1,
@@ -58,6 +63,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 1,
@@ -65,6 +71,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 1,
@@ -72,6 +79,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 1,
@@ -79,6 +87,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 1,
@@ -86,6 +95,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 2,
@@ -93,6 +103,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 2,
@@ -100,6 +111,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 2,
@@ -107,6 +119,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 2,
@@ -114,6 +127,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 2,
@@ -121,6 +135,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 2,
@@ -128,6 +143,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 2,
@@ -135,6 +151,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 2,
@@ -142,6 +159,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 3,
@@ -149,6 +167,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 3,
@@ -156,6 +175,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 3,
@@ -163,6 +183,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 3,
@@ -170,6 +191,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 3,
@@ -177,6 +199,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 3,
@@ -184,6 +207,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 3,
@@ -191,6 +215,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 3,
@@ -198,6 +223,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 4,
@@ -205,6 +231,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 4,
@@ -212,6 +239,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 4,
@@ -219,6 +247,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 4,
@@ -226,6 +255,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 4,
@@ -233,6 +263,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 4,
@@ -240,6 +271,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 4,
@@ -247,6 +279,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 4,
@@ -254,6 +287,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 5,
@@ -261,6 +295,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 5,
@@ -268,6 +303,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 5,
@@ -275,6 +311,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 5,
@@ -282,6 +319,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 5,
@@ -289,6 +327,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 5,
@@ -296,6 +335,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 5,
@@ -303,6 +343,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 5,
@@ -310,6 +351,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 6,
@@ -317,6 +359,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 6,
@@ -324,6 +367,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 6,
@@ -331,6 +375,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 6,
@@ -338,6 +383,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 6,
@@ -345,6 +391,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 6,
@@ -352,6 +399,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 6,
@@ -359,6 +407,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 6,
@@ -366,6 +415,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 7,
@@ -373,6 +423,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 7,
@@ -380,6 +431,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 7,
@@ -387,6 +439,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 7,
@@ -394,6 +447,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 7,
@@ -401,6 +455,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 7,
@@ -408,6 +463,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 7,
@@ -415,6 +471,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 7,
@@ -422,6 +479,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 8,
@@ -429,6 +487,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 8,
@@ -436,6 +495,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 8,
@@ -443,6 +503,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 8,
@@ -450,6 +511,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 8,
@@ -457,6 +519,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 8,
@@ -464,6 +527,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 8,
@@ -471,6 +535,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
         {
           row: 8,
@@ -478,6 +543,7 @@ export default {
           color: false,
           white: false,
           black: false,
+          pick: false,
         },
       ],
       chekcers: [
@@ -585,27 +651,67 @@ export default {
         },
       ],
       turn: 1,
+      queue: "white",
+      endTurn: false,
+      posForTurn: {},
+      pickChekcer: "",
     };
   },
   methods: {
     test(e) {
-      if (this.turn === 2) {
-        console.log(e);
+      if (this.turn >= 2 && this.queue === "white" && this.pickChekcer !== "") {
+        e.white = true;
+        this.queue = "black";
+        this.theEndTurn();
+        console.log("white");
+        this.pickChekcer = "";
+        return (this.endTurn = !this.endTurn);
+      }
+      if (this.turn >= 2 && this.queue === "black" && this.pickChekcer !== "") {
+        e.black = true;
+        this.queue = "white";
+        this.theEndTurn();
+        console.log("black");
+        this.pickChekcer = "";
+        return (this.endTurn = !this.endTurn);
       }
     },
     turnBlack(chekcerBlack) {
-      console.log(chekcerBlack);
-      this.turn = 1;
-      this.turn += 1;
-      console.log(this.turn);
+      if (this.queue === "black") {
+        chekcerBlack.pick = !chekcerBlack.pick;
+        this.pickChekcer = chekcerBlack;
+      }
+      if (chekcerBlack.pick === false) {
+        this.turn -= 1;
+      } else {
+        this.turn += 1;
+      }
+
+      console.log(this.pickChekcer);
     },
     turnWhite(chekcerWhite) {
-      console.log(chekcerWhite);
-      this.turn = 1;
-      this.turn += 1;
-      console.log(this.turn);
+      if (this.queue === "white") {
+        chekcerWhite.pick = !chekcerWhite.pick;
+        this.pickChekcer = chekcerWhite;
+      }
+      if (chekcerWhite.pick === false) {
+        this.turn -= 1;
+      } else {
+        this.turn += 1;
+      }
+      console.log(this.pickChekcer);
+    },
+    theEndTurn() {
+      this.chekcersCell.find((q) => {
+        if (q.pick === true) {
+          q.pick = !q.pick;
+          q.black = false;
+          q.white = false;
+        }
+      });
     },
   },
+
   computed: {
     myDesk() {
       for (let [key, value] of Object.entries(this.chekcersCell)) {
@@ -641,6 +747,11 @@ export default {
 </script>
 
 <style scoped>
+.pick_checker {
+  transform: scale(1.1, 1.1);
+  opacity: 0.5;
+  transition: 0.4s;
+}
 .my_desk {
   width: 1120px;
   height: 840px;
