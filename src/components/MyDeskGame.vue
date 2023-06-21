@@ -1,7 +1,7 @@
 <template>
   <div class="my_desk">
     <div
-      @click="test(checkerCell)"
+      @click="goTurn(checkerCell)"
       v-for="checkerCell in myDesk"
       :key="checkerCell.id"
       class="item_cell_white"
@@ -10,7 +10,7 @@
       <div
         @click.stop="turnBlack(checkerCell)"
         v-if="checkerCell.black"
-        class="chekcer"
+        class="checker"
         :class="{ pick_checker: checkerCell.pick }"
       >
         O
@@ -18,7 +18,7 @@
       <div
         @click.stop="turnWhite(checkerCell)"
         v-if="checkerCell.white"
-        class="chekcer"
+        class="checker"
         :class="{ pick_checker: checkerCell.pick }"
       >
         X
@@ -32,10 +32,11 @@ export default {
   name: "MyDeskGame",
   data() {
     return {
-      chekcersCell: [
+      checkersCell: [
         {
           row: 1,
           colum: "A",
+          posForTurn: 1,
           color: false,
           white: false,
           black: false,
@@ -44,6 +45,7 @@ export default {
         {
           row: 1,
           colum: "B",
+          posForTurn: 2,
           color: false,
           white: false,
           black: false,
@@ -52,6 +54,7 @@ export default {
         {
           row: 1,
           colum: "C",
+          posForTurn: 3,
           color: false,
           white: false,
           black: false,
@@ -60,6 +63,7 @@ export default {
         {
           row: 1,
           colum: "D",
+          posForTurn: 4,
           color: false,
           white: false,
           black: false,
@@ -68,6 +72,7 @@ export default {
         {
           row: 1,
           colum: "E",
+          posForTurn: 5,
           color: false,
           white: false,
           black: false,
@@ -76,6 +81,7 @@ export default {
         {
           row: 1,
           colum: "F",
+          posForTurn: 6,
           color: false,
           white: false,
           black: false,
@@ -84,6 +90,7 @@ export default {
         {
           row: 1,
           colum: "G",
+          posForTurn: 7,
           color: false,
           white: false,
           black: false,
@@ -92,6 +99,7 @@ export default {
         {
           row: 1,
           colum: "H",
+          posForTurn: 8,
           color: false,
           white: false,
           black: false,
@@ -100,6 +108,7 @@ export default {
         {
           row: 2,
           colum: "A",
+          posForTurn: 1,
           color: false,
           white: false,
           black: false,
@@ -108,6 +117,7 @@ export default {
         {
           row: 2,
           colum: "B",
+          posForTurn: 2,
           color: false,
           white: false,
           black: false,
@@ -116,6 +126,7 @@ export default {
         {
           row: 2,
           colum: "C",
+          posForTurn: 3,
           color: false,
           white: false,
           black: false,
@@ -124,6 +135,7 @@ export default {
         {
           row: 2,
           colum: "D",
+          posForTurn: 4,
           color: false,
           white: false,
           black: false,
@@ -132,6 +144,7 @@ export default {
         {
           row: 2,
           colum: "E",
+          posForTurn: 5,
           color: false,
           white: false,
           black: false,
@@ -140,6 +153,7 @@ export default {
         {
           row: 2,
           colum: "F",
+          posForTurn: 6,
           color: false,
           white: false,
           black: false,
@@ -148,6 +162,7 @@ export default {
         {
           row: 2,
           colum: "G",
+          posForTurn: 7,
           color: false,
           white: false,
           black: false,
@@ -156,6 +171,7 @@ export default {
         {
           row: 2,
           colum: "H",
+          posForTurn: 8,
           color: false,
           white: false,
           black: false,
@@ -164,6 +180,7 @@ export default {
         {
           row: 3,
           colum: "A",
+          posForTurn: 1,
           color: false,
           white: false,
           black: false,
@@ -172,6 +189,7 @@ export default {
         {
           row: 3,
           colum: "B",
+          posForTurn: 2,
           color: false,
           white: false,
           black: false,
@@ -180,6 +198,7 @@ export default {
         {
           row: 3,
           colum: "C",
+          posForTurn: 3,
           color: false,
           white: false,
           black: false,
@@ -188,6 +207,7 @@ export default {
         {
           row: 3,
           colum: "D",
+          posForTurn: 4,
           color: false,
           white: false,
           black: false,
@@ -196,6 +216,7 @@ export default {
         {
           row: 3,
           colum: "E",
+          posForTurn: 5,
           color: false,
           white: false,
           black: false,
@@ -204,6 +225,7 @@ export default {
         {
           row: 3,
           colum: "F",
+          posForTurn: 6,
           color: false,
           white: false,
           black: false,
@@ -212,6 +234,7 @@ export default {
         {
           row: 3,
           colum: "G",
+          posForTurn: 7,
           color: false,
           white: false,
           black: false,
@@ -220,6 +243,7 @@ export default {
         {
           row: 3,
           colum: "H",
+          posForTurn: 8,
           color: false,
           white: false,
           black: false,
@@ -228,6 +252,7 @@ export default {
         {
           row: 4,
           colum: "A",
+          posForTurn: 1,
           color: false,
           white: false,
           black: false,
@@ -236,6 +261,7 @@ export default {
         {
           row: 4,
           colum: "B",
+          posForTurn: 2,
           color: false,
           white: false,
           black: false,
@@ -244,6 +270,7 @@ export default {
         {
           row: 4,
           colum: "C",
+          posForTurn: 3,
           color: false,
           white: false,
           black: false,
@@ -252,6 +279,7 @@ export default {
         {
           row: 4,
           colum: "D",
+          posForTurn: 4,
           color: false,
           white: false,
           black: false,
@@ -260,6 +288,7 @@ export default {
         {
           row: 4,
           colum: "E",
+          posForTurn: 5,
           color: false,
           white: false,
           black: false,
@@ -268,6 +297,7 @@ export default {
         {
           row: 4,
           colum: "F",
+          posForTurn: 6,
           color: false,
           white: false,
           black: false,
@@ -276,6 +306,7 @@ export default {
         {
           row: 4,
           colum: "G",
+          posForTurn: 7,
           color: false,
           white: false,
           black: false,
@@ -284,6 +315,7 @@ export default {
         {
           row: 4,
           colum: "H",
+          posForTurn: 8,
           color: false,
           white: false,
           black: false,
@@ -292,6 +324,7 @@ export default {
         {
           row: 5,
           colum: "A",
+          posForTurn: 1,
           color: false,
           white: false,
           black: false,
@@ -300,6 +333,7 @@ export default {
         {
           row: 5,
           colum: "B",
+          posForTurn: 2,
           color: false,
           white: false,
           black: false,
@@ -308,6 +342,7 @@ export default {
         {
           row: 5,
           colum: "C",
+          posForTurn: 3,
           color: false,
           white: false,
           black: false,
@@ -316,6 +351,7 @@ export default {
         {
           row: 5,
           colum: "D",
+          posForTurn: 4,
           color: false,
           white: false,
           black: false,
@@ -324,6 +360,7 @@ export default {
         {
           row: 5,
           colum: "E",
+          posForTurn: 5,
           color: false,
           white: false,
           black: false,
@@ -332,6 +369,7 @@ export default {
         {
           row: 5,
           colum: "F",
+          posForTurn: 6,
           color: false,
           white: false,
           black: false,
@@ -340,6 +378,7 @@ export default {
         {
           row: 5,
           colum: "G",
+          posForTurn: 7,
           color: false,
           white: false,
           black: false,
@@ -348,6 +387,7 @@ export default {
         {
           row: 5,
           colum: "H",
+          posForTurn: 8,
           color: false,
           white: false,
           black: false,
@@ -356,6 +396,7 @@ export default {
         {
           row: 6,
           colum: "A",
+          posForTurn: 1,
           color: false,
           white: false,
           black: false,
@@ -364,6 +405,7 @@ export default {
         {
           row: 6,
           colum: "B",
+          posForTurn: 2,
           color: false,
           white: false,
           black: false,
@@ -372,6 +414,7 @@ export default {
         {
           row: 6,
           colum: "C",
+          posForTurn: 3,
           color: false,
           white: false,
           black: false,
@@ -380,6 +423,7 @@ export default {
         {
           row: 6,
           colum: "D",
+          posForTurn: 4,
           color: false,
           white: false,
           black: false,
@@ -388,6 +432,7 @@ export default {
         {
           row: 6,
           colum: "E",
+          posForTurn: 5,
           color: false,
           white: false,
           black: false,
@@ -396,6 +441,7 @@ export default {
         {
           row: 6,
           colum: "F",
+          posForTurn: 6,
           color: false,
           white: false,
           black: false,
@@ -404,6 +450,7 @@ export default {
         {
           row: 6,
           colum: "G",
+          posForTurn: 7,
           color: false,
           white: false,
           black: false,
@@ -412,6 +459,7 @@ export default {
         {
           row: 6,
           colum: "H",
+          posForTurn: 8,
           color: false,
           white: false,
           black: false,
@@ -420,6 +468,7 @@ export default {
         {
           row: 7,
           colum: "A",
+          posForTurn: 1,
           color: false,
           white: false,
           black: false,
@@ -428,6 +477,7 @@ export default {
         {
           row: 7,
           colum: "B",
+          posForTurn: 2,
           color: false,
           white: false,
           black: false,
@@ -436,6 +486,7 @@ export default {
         {
           row: 7,
           colum: "C",
+          posForTurn: 3,
           color: false,
           white: false,
           black: false,
@@ -444,6 +495,7 @@ export default {
         {
           row: 7,
           colum: "D",
+          posForTurn: 4,
           color: false,
           white: false,
           black: false,
@@ -452,6 +504,7 @@ export default {
         {
           row: 7,
           colum: "E",
+          posForTurn: 5,
           color: false,
           white: false,
           black: false,
@@ -460,6 +513,7 @@ export default {
         {
           row: 7,
           colum: "F",
+          posForTurn: 6,
           color: false,
           white: false,
           black: false,
@@ -468,6 +522,7 @@ export default {
         {
           row: 7,
           colum: "G",
+          posForTurn: 7,
           color: false,
           white: false,
           black: false,
@@ -476,6 +531,7 @@ export default {
         {
           row: 7,
           colum: "H",
+          posForTurn: 8,
           color: false,
           white: false,
           black: false,
@@ -484,6 +540,7 @@ export default {
         {
           row: 8,
           colum: "A",
+          posForTurn: 1,
           color: false,
           white: false,
           black: false,
@@ -492,6 +549,7 @@ export default {
         {
           row: 8,
           colum: "B",
+          posForTurn: 2,
           color: false,
           white: false,
           black: false,
@@ -500,6 +558,7 @@ export default {
         {
           row: 8,
           colum: "C",
+          posForTurn: 3,
           color: false,
           white: false,
           black: false,
@@ -508,6 +567,7 @@ export default {
         {
           row: 8,
           colum: "D",
+          posForTurn: 4,
           color: false,
           white: false,
           black: false,
@@ -516,6 +576,7 @@ export default {
         {
           row: 8,
           colum: "E",
+          posForTurn: 5,
           color: false,
           white: false,
           black: false,
@@ -524,6 +585,7 @@ export default {
         {
           row: 8,
           colum: "F",
+          posForTurn: 6,
           color: false,
           white: false,
           black: false,
@@ -532,6 +594,7 @@ export default {
         {
           row: 8,
           colum: "G",
+          posForTurn: 7,
           color: false,
           white: false,
           black: false,
@@ -540,13 +603,14 @@ export default {
         {
           row: 8,
           colum: "H",
+          posForTurn: 8,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
       ],
-      chekcers: [
+      checkers: [
         {
           white: [
             {
@@ -654,55 +718,73 @@ export default {
       queue: "white",
       endTurn: false,
       posForTurn: {},
-      pickChekcer: "",
+      pickChecker: "",
     };
   },
   methods: {
-    test(e) {
-      if (this.turn >= 2 && this.queue === "white" && this.pickChekcer !== "") {
+    goTurn(e) {
+      if (this.test(this.pickChecker, e) === false) {
+        return;
+      }
+      if (
+        this.turn >= 2 &&
+        this.queue === "white" &&
+        this.pickChecker !== "" &&
+        e.color
+      ) {
         e.white = true;
         this.queue = "black";
         this.theEndTurn();
         console.log("white");
-        this.pickChekcer = "";
+        this.pickChecker = "";
         return (this.endTurn = !this.endTurn);
       }
-      if (this.turn >= 2 && this.queue === "black" && this.pickChekcer !== "") {
+      if (
+        this.turn >= 2 &&
+        this.queue === "black" &&
+        this.pickChecker !== "" &&
+        e.color
+      ) {
         e.black = true;
         this.queue = "white";
         this.theEndTurn();
         console.log("black");
-        this.pickChekcer = "";
+        this.pickChecker = "";
         return (this.endTurn = !this.endTurn);
       }
+      console.log(this.pickChecker.colum + 1);
     },
-    turnBlack(chekcerBlack) {
+    turnBlack(checkerBlack) {
       if (this.queue === "black") {
-        chekcerBlack.pick = !chekcerBlack.pick;
-        this.pickChekcer = chekcerBlack;
-      }
-      if (chekcerBlack.pick === false) {
-        this.turn -= 1;
+        checkerBlack.pick = !checkerBlack.pick;
+        this.pickChecker = checkerBlack;
       } else {
+        return;
+      }
+      if (checkerBlack.pick === true && this.queue === "black") {
         this.turn += 1;
+      } else {
+        this.turn -= 1;
       }
 
-      console.log(this.pickChekcer);
+      console.log(this.pickChecker.colum);
     },
-    turnWhite(chekcerWhite) {
+    turnWhite(checkerWhite) {
       if (this.queue === "white") {
-        chekcerWhite.pick = !chekcerWhite.pick;
-        this.pickChekcer = chekcerWhite;
+        checkerWhite.pick = !checkerWhite.pick;
+        this.pickChecker = checkerWhite;
+      } else {
+        return;
       }
-      if (chekcerWhite.pick === false) {
+      if (checkerWhite.pick === false && this.queue === "white") {
         this.turn -= 1;
       } else {
         this.turn += 1;
       }
-      console.log(this.pickChekcer);
+      console.log(this.turn);
     },
     theEndTurn() {
-      this.chekcersCell.find((q) => {
+      this.checkersCell.find((q) => {
         if (q.pick === true) {
           q.pick = !q.pick;
           q.black = false;
@@ -710,11 +792,42 @@ export default {
         }
       });
     },
+    test(pickChecker, turnChecker) {
+      const range = 1;
+      console.log(pickChecker.row, turnChecker.row - range);
+      if (this.queue === "white") {
+        if (pickChecker.row + range === turnChecker.row) {
+          return false;
+        }
+        if (
+          (pickChecker.row - range === turnChecker.row &&
+            pickChecker.posForTurn === turnChecker.posForTurn - range) ||
+          pickChecker.posForTurn === turnChecker.posForTurn + range
+        ) { console.log('gogogo')
+        } else {
+          return false;
+        }
+      }
+      if (this.queue === "black") {
+        if (pickChecker.row - range === turnChecker.row) {
+          return false;
+        }
+        if (
+          (pickChecker.row + range === turnChecker.row &&
+            pickChecker.posForTurn === turnChecker.posForTurn + range) ||
+          pickChecker.posForTurn === turnChecker.posForTurn - range
+        ) {
+          console.log('gogogo')
+        } else {
+          return false;
+        }
+      }
+    },
   },
 
   computed: {
     myDesk() {
-      for (let [key, value] of Object.entries(this.chekcersCell)) {
+      for (let [key, value] of Object.entries(this.checkersCell)) {
         if (key % 2 !== 0 && value.row % 2 !== 0) {
           value.color = true;
         } else if (key % 2 == 0 && value.row % 2 == 0) {
@@ -722,19 +835,19 @@ export default {
         }
       }
 
-      return this.chekcersCell;
+      return this.checkersCell;
     },
   },
   mounted() {
     if (this.turn === 1) {
-      this.chekcersCell.forEach((q) => {
+      this.checkersCell.forEach((q) => {
         if (q.row <= 3 && q.color) {
           q.black = true;
         } else {
           q.black = false;
         }
       });
-      this.chekcersCell.forEach((q) => {
+      this.checkersCell.forEach((q) => {
         if (q.row >= 6 && q.color) {
           q.white = true;
         } else {
@@ -765,7 +878,7 @@ export default {
   box-shadow: 1px 1px 10px white;
 }
 
-.chekcer {
+.checker {
   font-size: 90px;
   color: rgb(115, 48, 14);
   cursor: pointer;
@@ -796,6 +909,10 @@ export default {
 
 .black {
   background: #000;
+}
+
+.pre_turn {
+  background: rgba(128, 128, 128, 0.59);
 }
 
 .white {
