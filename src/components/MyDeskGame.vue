@@ -7,6 +7,8 @@
       class="item_cell_white"
       :class="{ black: checkerCell.color }"
     >
+      <span v-if="checkerCell.canStep" class="pre_turn"></span>
+      <span v-if="checkerCell.canShot" class="can_shot"></span>
       <div
         @click.stop="turnBlack(checkerCell)"
         v-if="checkerCell.black"
@@ -34,576 +36,768 @@ export default {
     return {
       checkersCell: [
         {
+          id: 1,
           row: 1,
           colum: "A",
           posForTurn: 1,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 2,
           row: 1,
           colum: "B",
           posForTurn: 2,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 3,
           row: 1,
           colum: "C",
           posForTurn: 3,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 4,
           row: 1,
           colum: "D",
           posForTurn: 4,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 5,
           row: 1,
           colum: "E",
           posForTurn: 5,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 6,
           row: 1,
           colum: "F",
           posForTurn: 6,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 7,
           row: 1,
           colum: "G",
           posForTurn: 7,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 8,
           row: 1,
           colum: "H",
           posForTurn: 8,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 9,
           row: 2,
           colum: "A",
           posForTurn: 1,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 10,
           row: 2,
           colum: "B",
           posForTurn: 2,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 11,
           row: 2,
           colum: "C",
           posForTurn: 3,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 12,
           row: 2,
           colum: "D",
           posForTurn: 4,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 13,
           row: 2,
           colum: "E",
           posForTurn: 5,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 14,
           row: 2,
           colum: "F",
           posForTurn: 6,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 15,
           row: 2,
           colum: "G",
           posForTurn: 7,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 16,
           row: 2,
           colum: "H",
           posForTurn: 8,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 17,
           row: 3,
           colum: "A",
           posForTurn: 1,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 18,
           row: 3,
           colum: "B",
           posForTurn: 2,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 19,
           row: 3,
           colum: "C",
           posForTurn: 3,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 20,
           row: 3,
           colum: "D",
           posForTurn: 4,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 21,
           row: 3,
           colum: "E",
           posForTurn: 5,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 22,
           row: 3,
           colum: "F",
           posForTurn: 6,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 23,
           row: 3,
           colum: "G",
           posForTurn: 7,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 24,
           row: 3,
           colum: "H",
           posForTurn: 8,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 25,
           row: 4,
           colum: "A",
           posForTurn: 1,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 26,
           row: 4,
           colum: "B",
           posForTurn: 2,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 27,
           row: 4,
           colum: "C",
           posForTurn: 3,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 28,
           row: 4,
           colum: "D",
           posForTurn: 4,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 29,
           row: 4,
           colum: "E",
           posForTurn: 5,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 30,
           row: 4,
           colum: "F",
           posForTurn: 6,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 31,
           row: 4,
           colum: "G",
           posForTurn: 7,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 32,
           row: 4,
           colum: "H",
           posForTurn: 8,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 33,
           row: 5,
           colum: "A",
           posForTurn: 1,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 34,
           row: 5,
           colum: "B",
           posForTurn: 2,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 35,
           row: 5,
           colum: "C",
           posForTurn: 3,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 36,
           row: 5,
           colum: "D",
           posForTurn: 4,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 37,
           row: 5,
           colum: "E",
           posForTurn: 5,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 38,
           row: 5,
           colum: "F",
           posForTurn: 6,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 39,
           row: 5,
           colum: "G",
           posForTurn: 7,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 40,
           row: 5,
           colum: "H",
           posForTurn: 8,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 41,
           row: 6,
           colum: "A",
           posForTurn: 1,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 42,
           row: 6,
           colum: "B",
           posForTurn: 2,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 43,
           row: 6,
           colum: "C",
           posForTurn: 3,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 44,
           row: 6,
           colum: "D",
           posForTurn: 4,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 45,
           row: 6,
           colum: "E",
           posForTurn: 5,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 46,
           row: 6,
           colum: "F",
           posForTurn: 6,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 47,
           row: 6,
           colum: "G",
           posForTurn: 7,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 48,
           row: 6,
           colum: "H",
           posForTurn: 8,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 49,
           row: 7,
           colum: "A",
           posForTurn: 1,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 50,
           row: 7,
           colum: "B",
           posForTurn: 2,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 51,
           row: 7,
           colum: "C",
           posForTurn: 3,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 52,
           row: 7,
           colum: "D",
           posForTurn: 4,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 53,
           row: 7,
           colum: "E",
           posForTurn: 5,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 54,
           row: 7,
           colum: "F",
           posForTurn: 6,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 55,
           row: 7,
           colum: "G",
           posForTurn: 7,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 56,
           row: 7,
           colum: "H",
           posForTurn: 8,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 57,
           row: 8,
           colum: "A",
           posForTurn: 1,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 58,
           row: 8,
           colum: "B",
           posForTurn: 2,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 59,
           row: 8,
           colum: "C",
           posForTurn: 3,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 60,
           row: 8,
           colum: "D",
           posForTurn: 4,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 61,
           row: 8,
           colum: "E",
           posForTurn: 5,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 62,
           row: 8,
           colum: "F",
           posForTurn: 6,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 63,
           row: 8,
           colum: "G",
           posForTurn: 7,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
           pick: false,
         },
         {
+          id: 64,
           row: 8,
           colum: "H",
           posForTurn: 8,
+          canStep: false,
+          canShot: false,
           color: false,
           white: false,
           black: false,
@@ -717,25 +911,25 @@ export default {
       turn: 1,
       queue: "white",
       endTurn: false,
-      posForTurn: {},
       pickChecker: "",
+      helperTurn: [],
+      youCanGo: [],
+      potocenialShot: [],
     };
   },
   methods: {
     goTurn(e) {
-      if (this.test(this.pickChecker, e) === false) {
-        return;
-      }
+      console.log(e);
       if (
         this.turn >= 2 &&
         this.queue === "white" &&
         this.pickChecker !== "" &&
-        e.color
+        e.color &&
+        e.canStep
       ) {
         e.white = true;
         this.queue = "black";
         this.theEndTurn();
-        console.log("white");
         this.pickChecker = "";
         return (this.endTurn = !this.endTurn);
       }
@@ -743,21 +937,27 @@ export default {
         this.turn >= 2 &&
         this.queue === "black" &&
         this.pickChecker !== "" &&
-        e.color
+        e.color &&
+        e.canStep
       ) {
         e.black = true;
         this.queue = "white";
         this.theEndTurn();
-        console.log("black");
         this.pickChecker = "";
         return (this.endTurn = !this.endTurn);
       }
-      console.log(this.pickChecker.colum + 1);
     },
     turnBlack(checkerBlack) {
       if (this.queue === "black") {
-        checkerBlack.pick = !checkerBlack.pick;
         this.pickChecker = checkerBlack;
+        this.checkersCell.filter((checker) => {
+          if (checker === this.pickChecker) {
+            checker.pick = true;
+            this.findStep(checker);
+          } else {
+            checker.pick = false;
+          }
+        });
       } else {
         return;
       }
@@ -766,13 +966,19 @@ export default {
       } else {
         this.turn -= 1;
       }
-
-      console.log(this.pickChecker.colum);
     },
     turnWhite(checkerWhite) {
       if (this.queue === "white") {
-        checkerWhite.pick = !checkerWhite.pick;
         this.pickChecker = checkerWhite;
+        this.checkersCell.filter((checker) => {
+          if (checker === this.pickChecker) {
+            checker.pick = true;
+            this.findStep(checker);
+            
+          } else {
+            checker.pick = false;
+          }
+        });
       } else {
         return;
       }
@@ -781,10 +987,10 @@ export default {
       } else {
         this.turn += 1;
       }
-      console.log(this.turn);
     },
     theEndTurn() {
-      this.checkersCell.find((q) => {
+      this.checkersCell.forEach((q) => {
+        q.canStep = false;
         if (q.pick === true) {
           q.pick = !q.pick;
           q.black = false;
@@ -792,48 +998,81 @@ export default {
         }
       });
     },
-    test(pickChecker, turnChecker) {
-      const range = 1;
-      console.log(pickChecker.row, turnChecker.row - range);
+    findStep(pickChecker) {
+      this.youCanGo = [];
       if (this.queue === "white") {
-        if (pickChecker.row + range === turnChecker.row) {
-          return false;
-        }
-        if (
-          (pickChecker.row - range === turnChecker.row &&
-            pickChecker.posForTurn === turnChecker.posForTurn - range) ||
-          pickChecker.posForTurn === turnChecker.posForTurn + range
-        ) { console.log('gogogo')
-        } else {
-          return false;
-        }
+        this.checkersCell.forEach((q) => {
+          q.canStep = false;
+          if (q.id === pickChecker.id - 7 || q.id === pickChecker.id - 9) {
+            this.youCanGo.push(q);
+            this.youCanGo.filter((q) => {
+              if (!q.black && !q.white && q.row === this.pickChecker.row - 1) {
+                q.canStep = true;
+              }
+            });
+          }
+        });
       }
       if (this.queue === "black") {
-        if (pickChecker.row - range === turnChecker.row) {
-          return false;
-        }
-        if (
-          (pickChecker.row + range === turnChecker.row &&
-            pickChecker.posForTurn === turnChecker.posForTurn + range) ||
-          pickChecker.posForTurn === turnChecker.posForTurn - range
-        ) {
-          console.log('gogogo')
-        } else {
-          return false;
-        }
+        this.checkersCell.forEach((q) => {
+          q.canStep = false;
+          if (q.id === pickChecker.id + 7 || q.id === pickChecker.id + 9) {
+            this.youCanGo.push(q);
+            this.youCanGo.filter((q) => {
+              if (!q.black && !q.white && q.row === this.pickChecker.row + 1) {
+                q.canStep = true;
+              }
+            });
+          }
+        });
       }
     },
+    // changePos(pickChecker, turnChecker) {
+    //   const range = 1;
+    //   if (this.queue === "white") {
+    //     if (pickChecker.row + range === turnChecker.row || turnChecker.white) {
+    //       return false;
+    //     }
+    //     if (
+    //       (pickChecker.row - range === turnChecker.row &&
+    //         pickChecker.posForTurn === turnChecker.posForTurn - range) ||
+    //       pickChecker.posForTurn === turnChecker.posForTurn + range
+    //     ) {
+    //       this.helperTurn = [];
+    //       this.helperTurn.push(pickChecker, turnChecker);
+    //       console.log(this.helperTurn);
+    //     } else {
+    //       return false;
+    //     }
+    //   }
+    //   if (this.queue === "black") {
+    //     if (pickChecker.row - range === turnChecker.row || turnChecker.black) {
+    //       return false;
+    //     }
+    //     if (
+    //       (pickChecker.row + range === turnChecker.row &&
+    //         pickChecker.posForTurn === turnChecker.posForTurn + range) ||
+    //       pickChecker.posForTurn === turnChecker.posForTurn - range
+    //     ) {
+    //       this.helperTurn = [];
+    //       this.helperTurn.push(pickChecker, turnChecker);
+    //       console.log(this.helperTurn);
+    //     } else {
+    //       return false;
+    //     }
+    //   }
+    // },
   },
 
   computed: {
     myDesk() {
-      for (let [key, value] of Object.entries(this.checkersCell)) {
-        if (key % 2 !== 0 && value.row % 2 !== 0) {
-          value.color = true;
-        } else if (key % 2 == 0 && value.row % 2 == 0) {
-          value.color = true;
+      this.checkersCell.forEach((checker) => {
+        if (checker.id % 2 !== 0 && checker.row % 2 !== 0) {
+          checker.color = true;
+        } else if (checker.id % 2 == 0 && checker.row % 2 == 0) {
+          checker.color = true;
         }
-      }
+      });
 
       return this.checkersCell;
     },
@@ -912,7 +1151,17 @@ export default {
 }
 
 .pre_turn {
-  background: rgba(128, 128, 128, 0.59);
+  background: green;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.can_shot {
+  background: red;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
 }
 
 .white {
