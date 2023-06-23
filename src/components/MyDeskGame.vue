@@ -915,11 +915,28 @@ export default {
       helperTurn: [],
       youCanGo: [],
       potocenialShot: [],
+      potocenialKill: [],
     };
   },
   methods: {
     goTurn(e) {
       console.log(e);
+      if (e.canShot === true) {
+        this.potocenialKill.forEach((q) => {
+          if (q.black) {
+            q.black = false;
+            e.white = true;
+            this.queue = "black";
+            this.theEndTurn();
+          } else if (q.white) {
+            q.white = false;
+            e.black = true;
+            this.queue = "white";
+            console.log(this.potocenialKill);
+            this.theEndTurn();
+          }
+        });
+      }
       if (
         this.turn >= 2 &&
         this.queue === "white" &&
@@ -974,7 +991,6 @@ export default {
           if (checker === this.pickChecker) {
             checker.pick = true;
             this.findStep(checker);
-            
           } else {
             checker.pick = false;
           }
@@ -990,6 +1006,7 @@ export default {
     },
     theEndTurn() {
       this.checkersCell.forEach((q) => {
+        q.canShot = false;
         q.canStep = false;
         if (q.pick === true) {
           q.pick = !q.pick;
@@ -1000,12 +1017,17 @@ export default {
     },
     findStep(pickChecker) {
       this.youCanGo = [];
+      this.potocenialShot = [];
       if (this.queue === "white") {
         this.checkersCell.forEach((q) => {
           q.canStep = false;
           if (q.id === pickChecker.id - 7 || q.id === pickChecker.id - 9) {
             this.youCanGo.push(q);
             this.youCanGo.filter((q) => {
+              if (q.black) {
+                this.potocenialKill.push(q);
+                this.canShots(q);
+              }
               if (!q.black && !q.white && q.row === this.pickChecker.row - 1) {
                 q.canStep = true;
               }
@@ -1019,6 +1041,10 @@ export default {
           if (q.id === pickChecker.id + 7 || q.id === pickChecker.id + 9) {
             this.youCanGo.push(q);
             this.youCanGo.filter((q) => {
+              if (q.white) {
+                this.potocenialKill.push(q);
+                this.canShots(q);
+              }
               if (!q.black && !q.white && q.row === this.pickChecker.row + 1) {
                 q.canStep = true;
               }
@@ -1027,41 +1053,42 @@ export default {
         });
       }
     },
-    // changePos(pickChecker, turnChecker) {
-    //   const range = 1;
-    //   if (this.queue === "white") {
-    //     if (pickChecker.row + range === turnChecker.row || turnChecker.white) {
-    //       return false;
-    //     }
-    //     if (
-    //       (pickChecker.row - range === turnChecker.row &&
-    //         pickChecker.posForTurn === turnChecker.posForTurn - range) ||
-    //       pickChecker.posForTurn === turnChecker.posForTurn + range
-    //     ) {
-    //       this.helperTurn = [];
-    //       this.helperTurn.push(pickChecker, turnChecker);
-    //       console.log(this.helperTurn);
-    //     } else {
-    //       return false;
-    //     }
-    //   }
-    //   if (this.queue === "black") {
-    //     if (pickChecker.row - range === turnChecker.row || turnChecker.black) {
-    //       return false;
-    //     }
-    //     if (
-    //       (pickChecker.row + range === turnChecker.row &&
-    //         pickChecker.posForTurn === turnChecker.posForTurn + range) ||
-    //       pickChecker.posForTurn === turnChecker.posForTurn - range
-    //     ) {
-    //       this.helperTurn = [];
-    //       this.helperTurn.push(pickChecker, turnChecker);
-    //       console.log(this.helperTurn);
-    //     } else {
-    //       return false;
-    //     }
-    //   }
-    // },
+    canShots(itemShot) {
+      if (this.queue === "black") {
+        this.checkersCell.forEach((q) => {
+          if (q.pick && q.id + 9 === itemShot.id) {
+            this.checkersCell.find((i) => {
+              if (i.id === itemShot.id + 9) {
+                i.canShot = true;
+              }
+            });
+          } else if (q.pick && q.id + 7 === itemShot.id) {
+            this.checkersCell.find((i) => {
+              if (i.id === itemShot.id + 7) {
+                i.canShot = true;
+              }
+            });
+          }
+        });
+      }
+      if (this.queue === "white") {
+        this.checkersCell.forEach((q) => {
+          if (q.pick && q.id - 9 === itemShot.id) {
+            this.checkersCell.find((i) => {
+              if (i.id === itemShot.id - 9) {
+                i.canShot = true;
+              }
+            });
+          } else if (q.pick && q.id - 7 === itemShot.id) {
+            this.checkersCell.find((i) => {
+              if (i.id === itemShot.id - 7) {
+                i.canShot = true;
+              }
+            });
+          }
+        });
+      }
+    },
   },
 
   computed: {
