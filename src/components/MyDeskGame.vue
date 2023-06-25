@@ -921,18 +921,20 @@ export default {
   methods: {
     goTurn(e) {
       console.log(e);
+      console.log(this.potocenialKill);
       if (e.canShot === true) {
         this.potocenialKill.forEach((q) => {
           if (q.black) {
             q.black = false;
             e.white = true;
+            e.black = false;
             this.queue = "black";
             this.theEndTurn();
           } else if (q.white) {
             q.white = false;
             e.black = true;
+            e.white = false;
             this.queue = "white";
-            console.log(this.potocenialKill);
             this.theEndTurn();
           }
         });
@@ -1054,40 +1056,36 @@ export default {
       }
     },
     canShots(itemShot) {
-      if (this.queue === "black") {
-        this.checkersCell.forEach((q) => {
-          if (q.pick && q.id + 9 === itemShot.id) {
-            this.checkersCell.find((i) => {
-              if (i.id === itemShot.id + 9) {
-                i.canShot = true;
-              }
-            });
-          } else if (q.pick && q.id + 7 === itemShot.id) {
-            this.checkersCell.find((i) => {
-              if (i.id === itemShot.id + 7) {
-                i.canShot = true;
-              }
-            });
-          }
-        });
-      }
-      if (this.queue === "white") {
-        this.checkersCell.forEach((q) => {
-          if (q.pick && q.id - 9 === itemShot.id) {
-            this.checkersCell.find((i) => {
-              if (i.id === itemShot.id - 9) {
-                i.canShot = true;
-              }
-            });
-          } else if (q.pick && q.id - 7 === itemShot.id) {
-            this.checkersCell.find((i) => {
-              if (i.id === itemShot.id - 7) {
-                i.canShot = true;
-              }
-            });
-          }
-        });
-      }
+      const longShot = 9;
+      const shortShot = 7;
+      const multiPlier = this.queue === "black" ? 1 : -1;
+
+      this.checkersCell.forEach((q) => {
+        if (q.pick && q.id + longShot * multiPlier === itemShot.id) {
+          this.checkersCell.find((i) => {
+            if (
+              i.id === itemShot.id + longShot * multiPlier &&
+              !i.black &&
+              !i.white &&
+              i.color
+            ) {
+              this.potocenialShot.push(i);
+            }
+          });
+        } else if (q.pick && q.id + shortShot * multiPlier === itemShot.id) {
+          this.checkersCell.find((i) => {
+            if (
+              i.id === itemShot.id + shortShot * multiPlier &&
+              !i.black &&
+              !i.white &&
+              i.color
+            ) {
+              this.potocenialShot.push(i);
+            }
+          });
+        }
+      });
+
     },
   },
 
@@ -1121,6 +1119,17 @@ export default {
         }
       });
     }
+  },
+  watch: {
+    potocenialShot() {
+      this.checkersCell.filter((q) => {
+        if (q === this.potocenialShot[0]) {
+          q.canShot = true;
+        } else {
+          q.canShot = false;
+        }
+      });
+    },
   },
 };
 </script>
