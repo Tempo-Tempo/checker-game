@@ -916,6 +916,8 @@ export default {
       youCanGo: [],
       potocenialShot: [],
       potocenialKill: [],
+      longShot: 9,
+      shortShot: 7,
     };
   },
   methods: {
@@ -1017,6 +1019,13 @@ export default {
         }
       });
     },
+    checkShotPos(checker) {
+      if (checker.pick && !checker.black && !checker.white && !checker.color) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     findStep(pickChecker) {
       this.youCanGo = [];
       this.potocenialShot = [];
@@ -1056,36 +1065,46 @@ export default {
       }
     },
     canShots(itemShot) {
-      const longShot = 9;
-      const shortShot = 7;
-      const multiPlier = this.queue === "black" ? 1 : -1;
-
-      this.checkersCell.forEach((q) => {
-        if (q.pick && q.id + longShot * multiPlier === itemShot.id) {
-          this.checkersCell.find((i) => {
-            if (
-              i.id === itemShot.id + longShot * multiPlier &&
-              !i.black &&
-              !i.white &&
-              i.color
-            ) {
-              this.potocenialShot.push(i);
-            }
-          });
-        } else if (q.pick && q.id + shortShot * multiPlier === itemShot.id) {
-          this.checkersCell.find((i) => {
-            if (
-              i.id === itemShot.id + shortShot * multiPlier &&
-              !i.black &&
-              !i.white &&
-              i.color
-            ) {
-              this.potocenialShot.push(i);
-            }
-          });
+      this.checkersCell.forEach((checker) => {
+        if (this.checkShotPos(checker)) return;
+        const shortShotId = itemShot.id + this.shortShot * this.currentQueue;
+        const longShotId = itemShot.id + this.longShot * this.currentQueue;
+        const distanceLong = this.pickChecker.id + this.longShot * 2 * this.currentQueue;
+        const distanceShort = this.pickChecker.id + this.shortShot * 2 * this.currentQueue;
+        if (
+          distanceShort === shortShotId && checker.id === shortShotId) {
+          return this.potocenialShot = checker; 
+        } else if (
+          distanceLong === longShotId && checker.id === longShotId) {
+          return this.potocenialShot = checker;
         }
       });
 
+      // this.checkersCell.forEach((q) => {
+      //   if (q.pick && q.id + longShot * multiPlier === itemShot.id) {
+      //     this.checkersCell.find((i) => {
+      //       if (
+      //         i.id === itemShot.id + longShot * multiPlier &&
+      //         !i.black &&
+      //         !i.white &&
+      //         i.color
+      //       ) {
+      //         this.potocenialShot.push(i);
+      //       }
+      //     });
+      //   } else if (q.pick && q.id + shortShot * multiPlier === itemShot.id) {
+      //     this.checkersCell.find((i) => {
+      //       if (
+      //         i.id === itemShot.id + shortShot * multiPlier &&
+      //         !i.black &&
+      //         !i.white &&
+      //         i.color
+      //       ) {
+      //         this.potocenialShot.push(i);
+      //       }
+      //     });
+      //   }
+      // });
     },
   },
 
@@ -1098,35 +1117,37 @@ export default {
           checker.color = true;
         }
       });
-
       return this.checkersCell;
+    },
+    currentQueue() {
+      return this.queue === "black" ? 1 : -1;
     },
   },
   mounted() {
     if (this.turn === 1) {
-      this.checkersCell.forEach((q) => {
-        if (q.row <= 3 && q.color) {
-          q.black = true;
+      this.checkersCell.forEach((checkerCell) => {
+        if (checkerCell.row <= 3 && checkerCell.color) {
+          checkerCell.black = true;
         } else {
-          q.black = false;
+          checkerCell.black = false;
         }
       });
-      this.checkersCell.forEach((q) => {
-        if (q.row >= 6 && q.color) {
-          q.white = true;
+      this.checkersCell.forEach((checkerCell) => {
+        if (checkerCell.row >= 6 && checkerCell.color) {
+          checkerCell.white = true;
         } else {
-          q.white = false;
+          checkerCell.white = false;
         }
       });
     }
   },
   watch: {
     potocenialShot() {
-      this.checkersCell.filter((q) => {
-        if (q === this.potocenialShot[0]) {
-          q.canShot = true;
+      this.checkersCell.filter((checker) => {
+        if (checker === this.potocenialShot) {
+          checker.canShot = true;
         } else {
-          q.canShot = false;
+          checker.canShot = false;
         }
       });
     },
