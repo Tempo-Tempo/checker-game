@@ -804,110 +804,6 @@ export default {
           pick: false,
         },
       ],
-      checkers: [
-        {
-          white: [
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-          ],
-          black: [
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-            {
-              row: 1,
-              colum: "A",
-            },
-          ],
-        },
-      ],
       turn: 1,
       queue: "white",
       endTurn: false,
@@ -916,8 +812,8 @@ export default {
       youCanGo: [],
       potocenialShot: [],
       potocenialKill: [],
-      longShot: 9,
-      shortShot: 7,
+      longDistance: 9,
+      shortDistance: 7,
     };
   },
   methods: {
@@ -1009,102 +905,108 @@ export default {
       }
     },
     theEndTurn() {
-      this.checkersCell.forEach((q) => {
-        q.canShot = false;
-        q.canStep = false;
-        if (q.pick === true) {
-          q.pick = !q.pick;
-          q.black = false;
-          q.white = false;
+      this.checkersCell.forEach((checker) => {
+        checker.canShot = false;
+        checker.canStep = false;
+        if (checker.pick === true) {
+          checker.pick = !checker.pick;
+          checker.black = false;
+          checker.white = false;
         }
+        console.log(this.potocenialShot);
       });
     },
-    checkShotPos(checker) {
-      if (checker.pick && !checker.black && !checker.white && !checker.color) {
+    checkCheckerPos(checker) {
+      if (!checker.black && !checker.white && checker.color) {
         return true;
-      } else {
+      } else if (checker.black && this.queue !== "black") {
+        this.canShots(checker);
+        return false;
+      } else if (checker.white && this.queue === "black") {
+        this.canShots(checker);
         return false;
       }
+      console.log("check");
     },
     findStep(pickChecker) {
       this.youCanGo = [];
       this.potocenialShot = [];
-      if (this.queue === "white") {
-        this.checkersCell.forEach((q) => {
-          q.canStep = false;
-          if (q.id === pickChecker.id - 7 || q.id === pickChecker.id - 9) {
-            this.youCanGo.push(q);
-            this.youCanGo.filter((q) => {
-              if (q.black) {
-                this.potocenialKill.push(q);
-                this.canShots(q);
-              }
-              if (!q.black && !q.white && q.row === this.pickChecker.row - 1) {
-                q.canStep = true;
-              }
-            });
-          }
-        });
-      }
-      if (this.queue === "black") {
-        this.checkersCell.forEach((q) => {
-          q.canStep = false;
-          if (q.id === pickChecker.id + 7 || q.id === pickChecker.id + 9) {
-            this.youCanGo.push(q);
-            this.youCanGo.filter((q) => {
-              if (q.white) {
-                this.potocenialKill.push(q);
-                this.canShots(q);
-              }
-              if (!q.black && !q.white && q.row === this.pickChecker.row + 1) {
-                q.canStep = true;
-              }
-            });
-          }
-        });
-      }
+      this.potocenialKill = [];
+      const distanceLongStep =
+        pickChecker.id + this.longDistance * this.currentQueue;
+      const distanceShortStep =
+        pickChecker.id + this.shortDistance * this.currentQueue;
+      this.checkersCell.forEach((checker) => {
+        checker.canStep = false;
+        if (
+          checker.id === distanceShortStep ||
+          checker.id === distanceLongStep
+        ) {
+          this.youCanGo.push(checker);
+        }
+      });
+      console.log("find");
+      // if (this.queue === "white") {
+      //   this.checkersCell.forEach((q) => {
+      //     q.canStep = false;
+      //     if (q.id === pickChecker.id - 7 || q.id === pickChecker.id - 9) {
+      //       this.youCanGo.push(q);
+      //       this.youCanGo.filter((q) => {
+      //         if (q.black) {
+      //           this.potocenialKill.push(q);
+      //           this.canShots(q);
+      //         }
+      //         if (!q.black && !q.white && q.row === this.pickChecker.row - 1) {
+      //           q.canStep = true;
+      //         }
+      //       });
+      //     }
+      //   });
+      // }
+      // if (this.queue === "black") {
+      //   this.checkersCell.forEach((q) => {
+      //     q.canStep = false;
+      //     if (q.id === pickChecker.id + 7 || q.id === pickChecker.id + 9) {
+      //       this.youCanGo.push(q);
+      //       this.youCanGo.filter((q) => {
+      //         if (q.white) {
+      //           this.potocenialKill.push(q);
+      //           this.canShots(q);
+      //         }
+      //         if (!q.black && !q.white && q.row === this.pickChecker.row + 1) {
+      //           q.canStep = true;
+      //         }
+      //       });
+      //     }
+      //   });
+      // }
     },
     canShots(itemShot) {
       this.checkersCell.forEach((checker) => {
-        if (this.checkShotPos(checker)) return;
-        const shortShotId = itemShot.id + this.shortShot * this.currentQueue;
-        const longShotId = itemShot.id + this.longShot * this.currentQueue;
-        const distanceLong = this.pickChecker.id + this.longShot * 2 * this.currentQueue;
-        const distanceShort = this.pickChecker.id + this.shortShot * 2 * this.currentQueue;
+        const shortShotId =
+          itemShot.id + this.shortDistance * this.currentQueue;
+        const longShotId = itemShot.id + this.longDistance * this.currentQueue;
+        const distanceLongShot =
+          this.pickChecker.id + this.longDistance * 2 * this.currentQueue;
+        const distanceShortShot =
+          this.pickChecker.id + this.shortDistance * 2 * this.currentQueue;
         if (
-          distanceShort === shortShotId && checker.id === shortShotId) {
-          return this.potocenialShot = checker; 
+          distanceShortShot === shortShotId &&
+          checker.id === shortShotId &&
+          this.checkCheckerPos(checker)
+        ) {
+          this.potocenialKill.push(itemShot);
+          return (this.potocenialShot = checker);
         } else if (
-          distanceLong === longShotId && checker.id === longShotId) {
-          return this.potocenialShot = checker;
+          distanceLongShot === longShotId &&
+          checker.id === longShotId &&
+          this.checkCheckerPos(checker)
+        ) {
+          this.potocenialKill.push(itemShot);
+          return (this.potocenialShot = checker);
         }
       });
-
-      // this.checkersCell.forEach((q) => {
-      //   if (q.pick && q.id + longShot * multiPlier === itemShot.id) {
-      //     this.checkersCell.find((i) => {
-      //       if (
-      //         i.id === itemShot.id + longShot * multiPlier &&
-      //         !i.black &&
-      //         !i.white &&
-      //         i.color
-      //       ) {
-      //         this.potocenialShot.push(i);
-      //       }
-      //     });
-      //   } else if (q.pick && q.id + shortShot * multiPlier === itemShot.id) {
-      //     this.checkersCell.find((i) => {
-      //       if (
-      //         i.id === itemShot.id + shortShot * multiPlier &&
-      //         !i.black &&
-      //         !i.white &&
-      //         i.color
-      //       ) {
-      //         this.potocenialShot.push(i);
-      //       }
-      //     });
-      //   }
-      // });
+      console.log("shot");
     },
   },
 
@@ -1148,6 +1050,13 @@ export default {
           checker.canShot = true;
         } else {
           checker.canShot = false;
+        }
+      });
+    },
+    youCanGo() {
+      this.youCanGo.forEach((checker) => {
+        if (this.checkCheckerPos(checker)) {
+          checker.canStep = true;
         }
       });
     },
