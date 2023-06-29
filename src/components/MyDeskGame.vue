@@ -814,24 +814,24 @@ export default {
       potocenialKill: [],
       longDistance: 9,
       shortDistance: 7,
+      multiShotItem: {},
     };
   },
   methods: {
-    goTurn(e) {
-      console.log(e);
-      console.log(this.potocenialKill);
-      if (e.canShot === true) {
-        this.potocenialKill.forEach((q) => {
-          if (q.black) {
-            q.black = false;
-            e.white = true;
-            e.black = false;
+    goTurn(handlerCell) {
+      console.log(handlerCell);
+      if (handlerCell.canShot === true) {
+        this.potocenialKill.forEach((checker) => {
+          if (checker.black) {
+            checker.black = false;
+            handlerCell.white = true;
+            handlerCell.black = false;
             this.queue = "black";
             this.theEndTurn();
-          } else if (q.white) {
-            q.white = false;
-            e.black = true;
-            e.white = false;
+          } else if (checker.white) {
+            checker.white = false;
+            handlerCell.black = true;
+            handlerCell.white = false;
             this.queue = "white";
             this.theEndTurn();
           }
@@ -841,10 +841,10 @@ export default {
         this.turn >= 2 &&
         this.queue === "white" &&
         this.pickChecker !== "" &&
-        e.color &&
-        e.canStep
+        handlerCell.color &&
+        handlerCell.canStep
       ) {
-        e.white = true;
+        handlerCell.white = true;
         this.queue = "black";
         this.theEndTurn();
         this.pickChecker = "";
@@ -854,10 +854,10 @@ export default {
         this.turn >= 2 &&
         this.queue === "black" &&
         this.pickChecker !== "" &&
-        e.color &&
-        e.canStep
+        handlerCell.color &&
+        handlerCell.canStep
       ) {
-        e.black = true;
+        handlerCell.black = true;
         this.queue = "white";
         this.theEndTurn();
         this.pickChecker = "";
@@ -913,20 +913,23 @@ export default {
           checker.black = false;
           checker.white = false;
         }
-        console.log(this.potocenialShot);
       });
+      this.checkMultiShot(this.potocenialShot);
     },
     checkCheckerPos(checker) {
+    
+      console.log(this.queue)
       if (!checker.black && !checker.white && checker.color) {
         return true;
       } else if (checker.black && this.queue !== "black") {
+        console.log(checker, 'white')
         this.canShots(checker);
         return false;
       } else if (checker.white && this.queue === "black") {
+        console.log(checker, 'black')
         this.canShots(checker);
         return false;
       }
-      console.log("check");
     },
     findStep(pickChecker) {
       this.youCanGo = [];
@@ -943,45 +946,14 @@ export default {
           checker.id === distanceLongStep
         ) {
           this.youCanGo.push(checker);
+        } else {
+          return false;
         }
       });
-      console.log("find");
-      // if (this.queue === "white") {
-      //   this.checkersCell.forEach((q) => {
-      //     q.canStep = false;
-      //     if (q.id === pickChecker.id - 7 || q.id === pickChecker.id - 9) {
-      //       this.youCanGo.push(q);
-      //       this.youCanGo.filter((q) => {
-      //         if (q.black) {
-      //           this.potocenialKill.push(q);
-      //           this.canShots(q);
-      //         }
-      //         if (!q.black && !q.white && q.row === this.pickChecker.row - 1) {
-      //           q.canStep = true;
-      //         }
-      //       });
-      //     }
-      //   });
-      // }
-      // if (this.queue === "black") {
-      //   this.checkersCell.forEach((q) => {
-      //     q.canStep = false;
-      //     if (q.id === pickChecker.id + 7 || q.id === pickChecker.id + 9) {
-      //       this.youCanGo.push(q);
-      //       this.youCanGo.filter((q) => {
-      //         if (q.white) {
-      //           this.potocenialKill.push(q);
-      //           this.canShots(q);
-      //         }
-      //         if (!q.black && !q.white && q.row === this.pickChecker.row + 1) {
-      //           q.canStep = true;
-      //         }
-      //       });
-      //     }
-      //   });
-      // }
     },
     canShots(itemShot) {
+      console.log(itemShot)
+      console.log(this.pickChecker)
       this.checkersCell.forEach((checker) => {
         const shortShotId =
           itemShot.id + this.shortDistance * this.currentQueue;
@@ -996,6 +968,7 @@ export default {
           this.checkCheckerPos(checker)
         ) {
           this.potocenialKill.push(itemShot);
+          console.log("4mo")
           return (this.potocenialShot = checker);
         } else if (
           distanceLongShot === longShotId &&
@@ -1003,10 +976,50 @@ export default {
           this.checkCheckerPos(checker)
         ) {
           this.potocenialKill.push(itemShot);
+          console.log("lox")
           return (this.potocenialShot = checker);
+          
         }
       });
-      console.log("shot");
+    },
+    checkMultiShot(potocenialShot) {
+      const longDistanceShotIdDown = potocenialShot.id - this.longDistance;
+      const longDistanceShotIdUp = potocenialShot.id + this.longDistance;
+      const shortDistanceShotIdDown = potocenialShot.id - this.shortDistance;
+      const shortDistanceShotIdUp = potocenialShot.id + this.shortDistance;
+     
+      this.checkersCell.forEach((checker) => {
+        if (
+          checker.id === longDistanceShotIdDown ||
+          (checker.id === shortDistanceShotIdDown)
+        ) {
+          this.multiShotItem = checker;
+          this.pickChecker = potocenialShot;
+          potocenialShot.pick = !potocenialShot.pick;
+          
+         return 
+         
+        } else if (
+          checker.id === longDistanceShotIdUp ||
+          (checker.id === shortDistanceShotIdUp )
+        ) {
+          this.multiShotItem = checker;
+          this.pickChecker = potocenialShot;
+         potocenialShot.pick = !potocenialShot.pick;
+         
+         return
+        
+        }
+      });
+      if(this.multiShotItem.black) {
+        
+        this.queue = 'white';
+      } else if(this.multiShotItem.white) {
+       
+        this.queue = 'black';
+      }
+      this.checkCheckerPos(this.multiShotItem);
+      console.log(this.pickChecker, 'fromMulti')
     },
   },
 
@@ -1022,6 +1035,13 @@ export default {
       return this.checkersCell;
     },
     currentQueue() {
+      console.log(this.multiShotItem.id)
+      console.log(this.pickChecker.id)
+    if(Object.keys(this.multiShotItem).length !== 0 && this.multiShotItem.id > this.pickChecker.id) {
+      return 1;
+    } else if (Object.keys(this.multiShotItem).length !== 0 && this.multiShotItem.id < this.pickChecker.id) {
+      return -1;
+    }
       return this.queue === "black" ? 1 : -1;
     },
   },
