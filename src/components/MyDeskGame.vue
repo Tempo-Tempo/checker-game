@@ -819,7 +819,7 @@ export default {
   },
   methods: {
     goTurn(handlerCell) {
-      console.log(handlerCell);
+      console.log(handlerCell)
       if (handlerCell.canShot === true) {
         this.potocenialKill.forEach((checker) => {
           if (checker.black) {
@@ -883,8 +883,10 @@ export default {
       } else {
         this.turn -= 1;
       }
+      this.multiShotItem = {};
     },
     turnWhite(checkerWhite) {
+     this.multiShotItem = {};
       if (this.queue === "white") {
         this.pickChecker = checkerWhite;
         this.checkersCell.filter((checker) => {
@@ -903,18 +905,20 @@ export default {
       } else {
         this.turn += 1;
       }
+      this.multiShotItem = {};
     },
     theEndTurn() {
       this.checkersCell.forEach((checker) => {
         checker.canShot = false;
         checker.canStep = false;
         if (checker.pick === true) {
+      
           checker.pick = !checker.pick;
           checker.black = false;
           checker.white = false;
         }
       });
-      this.multiShotItem = {};
+      
       this.checkMultiShot(this.potocenialShot);
     },
     checkCheckerPos(checker) {
@@ -928,15 +932,20 @@ export default {
         return false;
       }
     },
+    checkShotPos(itemShotId) {
+      this.checkersCell.forEach((checker) => {
+        if(checker.id === itemShotId && !checker.black && !checker.white && checker.color) {
+          return true;
+        }
+      })
+    },
     findStep(pickChecker) {
       this.youCanGo = [];
       this.potocenialShot = [];
       this.potocenialKill = [];
-      console.log(this.multiShotItem)
-      if(Object.keys(this.multiShotItem).length !== 0) return;
-     
+      console.log(pickChecker)
       const distanceLongStep =
-        pickChecker.id + this.longDistance * this.currentQueue;
+        this.pickChecker.id + this.longDistance * this.currentQueue;
       const distanceShortStep =
         pickChecker.id + this.shortDistance * this.currentQueue;
       this.checkersCell.forEach((checker) => {
@@ -952,8 +961,8 @@ export default {
       });
     },
     canShots(itemShot) {
-      console.log(itemShot);
-      console.log(this.pickChecker);
+     
+      console.log(this.currentQueue)
       this.checkersCell.forEach((checker) => {
         const shortShotId =
           itemShot.id + this.shortDistance * this.currentQueue;
@@ -968,7 +977,6 @@ export default {
           this.checkCheckerPos(checker)
         ) {
           this.potocenialKill.push(itemShot);
-          console.log(checker, "canShot");
           return (this.potocenialShot = checker);
         } else if (
           distanceLongShot === longShotId &&
@@ -976,25 +984,21 @@ export default {
           this.checkCheckerPos(checker)
         ) {
           this.potocenialKill.push(itemShot);
-          console.log(checker, "canShot2");
           return (this.potocenialShot = checker);
         }
       });
     },
     checkMultiShot(potocenialShot) {
-      // const longDistanceShotIdDown = potocenialShot.id - this.longDistance * 2;
-      // const longDistanceShotIdUp = potocenialShot.id + this.longDistance * 2;
-      // const shortDistanceShotIdDown = potocenialShot.id - this.shortDistance * 2;
-      // const shortDistanceShotIdUp = potocenialShot.id + this.shortDistance * 2;
       const shotRowDown = potocenialShot.row - 1;
       const shotRowUp = potocenialShot.row + 1;
       const shotPosLeft = potocenialShot.posForTurn - 1;
       const shotPosRight = potocenialShot.posForTurn + 1;
-     
+     this.multiShotItem = {};
+     console.log(this.currentQueue)
       this.checkersCell.forEach((checker) => {
         if (
           (checker.row === shotRowDown &&
-            checker.posForTurn === shotPosLeft &&
+            checker.posForTurn === shotPosLeft && 
             !this.checkCheckerPos(checker)) ||
           (checker.row === shotRowDown &&
             checker.posForTurn === shotPosRight &&
@@ -1016,14 +1020,8 @@ export default {
           return;
         }
       });
-      if (this.multiShotItem.black) {
-        this.queue = "white";
-        this.turnWhite(this.pickChecker);
-      } else if (this.multiShotItem.white) {
-        this.queue = "black";
-        this.turnBlack(this.pickChecker);
-      }
-      
+    
+    
       this.canShots(this.multiShotItem);
     },
   },
@@ -1040,19 +1038,16 @@ export default {
       return this.checkersCell;
     },
     currentQueue() {
-      if (
-        Object.keys(this.multiShotItem).length !== 0 &&
-        this.multiShotItem.id > this.pickChecker.id
-      ) {
+        if(Object.keys(this.multiShotItem).length !== 0 && this.multiShotItem.id > this.pickChecker.id || this.queue === 'black') {
+        console.log('нужна 1')
         return 1;
-      } else if (
-        Object.keys(this.multiShotItem).length !== 0 &&
-        this.multiShotItem.id < this.pickChecker.id
-      ) {
+      } else  {
+        console.log('нужна -1 ')
         return -1;
       }
-      return this.queue === "black" ? 1 : -1;
+      // return this.queue === "black" ? 1 : -1;
     },
+    
   },
   mounted() {
     if (this.turn === 1) {
@@ -1089,6 +1084,14 @@ export default {
         }
       });
     },
+    pickChecker() {
+    
+      this.checkersCell.forEach((checker) => {
+        if(checker.id === this.pickChecker.id) {
+          checker.pick = true;
+        }
+      })
+    }
   },
 };
 </script>
