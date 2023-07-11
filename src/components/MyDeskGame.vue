@@ -2,7 +2,7 @@
   <div class="my_desk">
     <div
       @click="goTurn(checkerCell)"
-      v-for="checkerCell in myDesk"
+      v-for="checkerCell in CHECKERSCELL"
       :key="checkerCell.id"
       class="item_cell_white"
       :class="{ black: checkerCell.color }"
@@ -30,780 +30,11 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
 export default {
   name: "MyDeskGame",
   data() {
     return {
-      checkersCell: [
-        {
-          id: 1,
-          row: 1,
-          colum: "A",
-          posForTurn: 1,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 2,
-          row: 1,
-          colum: "B",
-          posForTurn: 2,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 3,
-          row: 1,
-          colum: "C",
-          posForTurn: 3,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 4,
-          row: 1,
-          colum: "D",
-          posForTurn: 4,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 5,
-          row: 1,
-          colum: "E",
-          posForTurn: 5,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 6,
-          row: 1,
-          colum: "F",
-          posForTurn: 6,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 7,
-          row: 1,
-          colum: "G",
-          posForTurn: 7,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 8,
-          row: 1,
-          colum: "H",
-          posForTurn: 8,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 9,
-          row: 2,
-          colum: "A",
-          posForTurn: 1,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 10,
-          row: 2,
-          colum: "B",
-          posForTurn: 2,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 11,
-          row: 2,
-          colum: "C",
-          posForTurn: 3,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 12,
-          row: 2,
-          colum: "D",
-          posForTurn: 4,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 13,
-          row: 2,
-          colum: "E",
-          posForTurn: 5,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 14,
-          row: 2,
-          colum: "F",
-          posForTurn: 6,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 15,
-          row: 2,
-          colum: "G",
-          posForTurn: 7,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 16,
-          row: 2,
-          colum: "H",
-          posForTurn: 8,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 17,
-          row: 3,
-          colum: "A",
-          posForTurn: 1,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 18,
-          row: 3,
-          colum: "B",
-          posForTurn: 2,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 19,
-          row: 3,
-          colum: "C",
-          posForTurn: 3,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 20,
-          row: 3,
-          colum: "D",
-          posForTurn: 4,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 21,
-          row: 3,
-          colum: "E",
-          posForTurn: 5,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 22,
-          row: 3,
-          colum: "F",
-          posForTurn: 6,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 23,
-          row: 3,
-          colum: "G",
-          posForTurn: 7,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 24,
-          row: 3,
-          colum: "H",
-          posForTurn: 8,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 25,
-          row: 4,
-          colum: "A",
-          posForTurn: 1,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 26,
-          row: 4,
-          colum: "B",
-          posForTurn: 2,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 27,
-          row: 4,
-          colum: "C",
-          posForTurn: 3,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 28,
-          row: 4,
-          colum: "D",
-          posForTurn: 4,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 29,
-          row: 4,
-          colum: "E",
-          posForTurn: 5,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 30,
-          row: 4,
-          colum: "F",
-          posForTurn: 6,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 31,
-          row: 4,
-          colum: "G",
-          posForTurn: 7,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 32,
-          row: 4,
-          colum: "H",
-          posForTurn: 8,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 33,
-          row: 5,
-          colum: "A",
-          posForTurn: 1,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 34,
-          row: 5,
-          colum: "B",
-          posForTurn: 2,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 35,
-          row: 5,
-          colum: "C",
-          posForTurn: 3,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 36,
-          row: 5,
-          colum: "D",
-          posForTurn: 4,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 37,
-          row: 5,
-          colum: "E",
-          posForTurn: 5,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 38,
-          row: 5,
-          colum: "F",
-          posForTurn: 6,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 39,
-          row: 5,
-          colum: "G",
-          posForTurn: 7,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 40,
-          row: 5,
-          colum: "H",
-          posForTurn: 8,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 41,
-          row: 6,
-          colum: "A",
-          posForTurn: 1,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 42,
-          row: 6,
-          colum: "B",
-          posForTurn: 2,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 43,
-          row: 6,
-          colum: "C",
-          posForTurn: 3,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 44,
-          row: 6,
-          colum: "D",
-          posForTurn: 4,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 45,
-          row: 6,
-          colum: "E",
-          posForTurn: 5,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 46,
-          row: 6,
-          colum: "F",
-          posForTurn: 6,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 47,
-          row: 6,
-          colum: "G",
-          posForTurn: 7,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 48,
-          row: 6,
-          colum: "H",
-          posForTurn: 8,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 49,
-          row: 7,
-          colum: "A",
-          posForTurn: 1,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 50,
-          row: 7,
-          colum: "B",
-          posForTurn: 2,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 51,
-          row: 7,
-          colum: "C",
-          posForTurn: 3,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 52,
-          row: 7,
-          colum: "D",
-          posForTurn: 4,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 53,
-          row: 7,
-          colum: "E",
-          posForTurn: 5,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 54,
-          row: 7,
-          colum: "F",
-          posForTurn: 6,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 55,
-          row: 7,
-          colum: "G",
-          posForTurn: 7,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 56,
-          row: 7,
-          colum: "H",
-          posForTurn: 8,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 57,
-          row: 8,
-          colum: "A",
-          posForTurn: 1,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 58,
-          row: 8,
-          colum: "B",
-          posForTurn: 2,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 59,
-          row: 8,
-          colum: "C",
-          posForTurn: 3,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 60,
-          row: 8,
-          colum: "D",
-          posForTurn: 4,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 61,
-          row: 8,
-          colum: "E",
-          posForTurn: 5,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 62,
-          row: 8,
-          colum: "F",
-          posForTurn: 6,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 63,
-          row: 8,
-          colum: "G",
-          posForTurn: 7,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-        {
-          id: 64,
-          row: 8,
-          colum: "H",
-          posForTurn: 8,
-          canStep: false,
-          canShot: false,
-          color: false,
-          white: false,
-          black: false,
-          pick: false,
-        },
-      ],
       turn: 1,
       queue: "white",
       endTurn: false,
@@ -818,21 +49,30 @@ export default {
     };
   },
   methods: {
+    ...mapActions([
+      "GET_CHECKERSCELL_FROM_API"
+    ]),
     goTurn(handlerCell) {
-      console.log(handlerCell)
+      console.log(handlerCell);
       if (handlerCell.canShot === true) {
-        
-        
         this.potentialKill.forEach((checker) => {
-          const currentShotLongId = handlerCell.id + (-this.longDistance * this.currentQueue);
-        const currentShotShortId = handlerCell.id + (-this.shortDistance * this.currentQueue);
-          if (checker.black && checker.id === currentShotLongId || checker.black && checker.id === currentShotShortId) {
+          const currentShotLongId =
+            handlerCell.id + -this.longDistance * this.currentQueue;
+          const currentShotShortId =
+            handlerCell.id + -this.shortDistance * this.currentQueue;
+          if (
+            (checker.black && checker.id === currentShotLongId) ||
+            (checker.black && checker.id === currentShotShortId)
+          ) {
             checker.black = false;
             handlerCell.white = true;
             handlerCell.black = false;
             this.queue = "black";
             this.theEndTurn();
-          } else if (checker.white && checker.id === currentShotLongId || checker.white && checker.id === currentShotShortId) {
+          } else if (
+            (checker.white && checker.id === currentShotLongId) ||
+            (checker.white && checker.id === currentShotShortId)
+          ) {
             checker.white = false;
             handlerCell.black = true;
             handlerCell.white = false;
@@ -871,7 +111,7 @@ export default {
     turnBlack(checkerBlack) {
       if (this.queue === "black") {
         this.pickChecker = checkerBlack;
-        this.checkersCell.filter((checker) => {
+        this.CHECKERSCELL.filter((checker) => {
           if (checker === this.pickChecker) {
             checker.pick = true;
             this.findStep(checker);
@@ -890,10 +130,10 @@ export default {
       this.multiShotItem = {};
     },
     turnWhite(checkerWhite) {
-     this.multiShotItem = {};
+      this.multiShotItem = {};
       if (this.queue === "white") {
         this.pickChecker = checkerWhite;
-        this.checkersCell.filter((checker) => {
+        this.CHECKERSCELL.filter((checker) => {
           if (checker === this.pickChecker) {
             checker.pick = true;
             this.findStep(checker);
@@ -912,17 +152,16 @@ export default {
       this.multiShotItem = {};
     },
     theEndTurn() {
-      this.checkersCell.forEach((checker) => {
+      this.CHECKERSCELL.forEach((checker) => {
         checker.canShot = false;
         checker.canStep = false;
         if (checker.pick === true) {
-      
           checker.pick = !checker.pick;
           checker.black = false;
           checker.white = false;
         }
       });
-      
+
       this.checkMultiShot(this.potentialShot);
     },
     checkCheckerPos(checker) {
@@ -937,22 +176,27 @@ export default {
       }
     },
     checkShotPos(itemShotId) {
-      this.checkersCell.forEach((checker) => {
-        if(checker.id === itemShotId && !checker.black && !checker.white && checker.color) {
+      this.CHECKERSCELL.forEach((checker) => {
+        if (
+          checker.id === itemShotId &&
+          !checker.black &&
+          !checker.white &&
+          checker.color
+        ) {
           return true;
         }
-      })
+      });
     },
     findStep(pickChecker) {
       this.youCanGo = [];
       this.potentialShot = [];
       this.potentialKill = [];
-      console.log(pickChecker)
+      console.log(pickChecker);
       const distanceLongStep =
         this.pickChecker.id + this.longDistance * this.currentQueue;
       const distanceShortStep =
         pickChecker.id + this.shortDistance * this.currentQueue;
-      this.checkersCell.forEach((checker) => {
+      this.CHECKERSCELL.forEach((checker) => {
         checker.canStep = false;
         if (
           checker.id === distanceShortStep ||
@@ -965,9 +209,8 @@ export default {
       });
     },
     canShots(itemShot) {
-     
-      console.log(this.currentQueue)
-      this.checkersCell.forEach((checker) => {
+      console.log(this.currentQueue);
+      this.CHECKERSCELL.forEach((checker) => {
         const shortShotId =
           itemShot.id + this.shortDistance * this.currentQueue;
         const longShotId = itemShot.id + this.longDistance * this.currentQueue;
@@ -981,19 +224,19 @@ export default {
           this.checkCheckerPos(checker)
         ) {
           this.potentialKill.push(itemShot);
-          console.log('short')
+          console.log("short");
           this.potentialShot.push(checker);
-          return this.test()
+          return this.test();
         } else if (
           distanceLongShot === longShotId &&
           checker.id === longShotId &&
           this.checkCheckerPos(checker)
         ) {
           this.potentialKill.push(itemShot);
-          console.log('long')
-          
-           this.potentialShot.push(checker);
-           return this.test()
+          console.log("long");
+
+          this.potentialShot.push(checker);
+          return this.test();
         }
       });
     },
@@ -1002,12 +245,12 @@ export default {
       const shotRowUp = potentialShot.row + 1;
       const shotPosLeft = potentialShot.posForTurn - 1;
       const shotPosRight = potentialShot.posForTurn + 1;
-     this.multiShotItem = {};
-     console.log(this.currentQueue)
-      this.checkersCell.forEach((checker) => {
+      this.multiShotItem = {};
+      console.log(this.currentQueue);
+      this.CHECKERSCELL.forEach((checker) => {
         if (
           (checker.row === shotRowDown &&
-            checker.posForTurn === shotPosLeft && 
+            checker.posForTurn === shotPosLeft &&
             !this.checkCheckerPos(checker)) ||
           (checker.row === shotRowDown &&
             checker.posForTurn === shotPosRight &&
@@ -1029,59 +272,55 @@ export default {
           return;
         }
       });
-    
-    
+
       this.canShots(this.multiShotItem);
     },
     test() {
       this.potentialShot.forEach((q) => {
-        console.log(q)
-        this.checkersCell.filter((checker) => {
-        console.log('suka ti ebana')
-       console.log(q)
-        if (checker === q) {
-          checker.canShot = true;
-        } else {
-          checker.canShot = false;
-        }
+        console.log(q);
+        this.CHECKERSCELL.filter((checker) => {
+          console.log("suka ti ebana");
+          console.log(q);
+          if (checker === q) {
+            checker.canShot = true;
+          } else {
+            checker.canShot = false;
+          }
+        });
       });
-      })
-    }
+    },
   },
 
   computed: {
-    myDesk() {
-      this.checkersCell.forEach((checker) => {
-        if (checker.id % 2 !== 0 && checker.row % 2 !== 0) {
-          checker.color = true;
-        } else if (checker.id % 2 == 0 && checker.row % 2 == 0) {
-          checker.color = true;
-        }
-      });
-      return this.checkersCell;
-    },
+    ...mapGetters([
+      "CHECKERSCELL"
+  ]),
     currentQueue() {
-        if(Object.keys(this.multiShotItem).length !== 0 && this.multiShotItem.id > this.pickChecker.id || this.queue === 'black') {
-        console.log('нужна 1')
+      if (
+        (Object.keys(this.multiShotItem).length !== 0 &&
+          this.multiShotItem.id > this.pickChecker.id) ||
+        this.queue === "black"
+      ) {
+        console.log("нужна 1");
         return 1;
-      } else  {
-        console.log('нужна -1 ')
+      } else {
+        console.log("нужна -1 ");
         return -1;
       }
       // return this.queue === "black" ? 1 : -1;
     },
-   
   },
-  mounted() {
+ async mounted() {
+   await this.GET_CHECKERSCELL_FROM_API();
     if (this.turn === 1) {
-      this.checkersCell.forEach((checkerCell) => {
+      this.CHECKERSCELL.forEach((checkerCell) => {
         if (checkerCell.row <= 3 && checkerCell.color) {
           checkerCell.black = true;
         } else {
           checkerCell.black = false;
         }
       });
-      this.checkersCell.forEach((checkerCell) => {
+      this.CHECKERSCELL.forEach((checkerCell) => {
         if (checkerCell.row >= 6 && checkerCell.color) {
           checkerCell.white = true;
         } else {
@@ -1093,11 +332,8 @@ export default {
   watch: {
     potentialShot() {
       // console.log(this.potentialShot)
-      console.log(this.potentialShot)
-      console.log(this.potentialKill)
-
-    
-     
+      console.log(this.potentialShot);
+      console.log(this.potentialKill);
     },
     youCanGo() {
       this.youCanGo.forEach((checker) => {
@@ -1107,13 +343,12 @@ export default {
       });
     },
     pickChecker() {
-    
-      this.checkersCell.forEach((checker) => {
-        if(checker.id === this.pickChecker.id) {
+      this.CHECKERSCELL.forEach((checker) => {
+        if (checker.id === this.pickChecker.id) {
           checker.pick = true;
         }
-      })
-    }
+      });
+    },
   },
 };
 </script>
