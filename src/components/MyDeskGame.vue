@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "MyDeskGame",
   data() {
@@ -50,9 +50,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions([
-      "GET_CHECKERSCELL_FROM_API"
-    ]),
+    ...mapActions(["GET_CHECKERSCELL_FROM_API"]),
     goTurn(handlerCell) {
       console.log(handlerCell);
       if (handlerCell.canShot === true) {
@@ -68,7 +66,7 @@ export default {
           ) {
             checker.black = false;
             handlerCell.white = true;
-          
+            console.log('go kill white')
             handlerCell.black = false;
             this.queue = "black";
             this.theEndTurn();
@@ -78,7 +76,7 @@ export default {
           ) {
             checker.white = false;
             handlerCell.black = true;
-            
+
             handlerCell.white = false;
             this.queue = "white";
             this.theEndTurn();
@@ -181,23 +179,47 @@ export default {
         return false;
       }
     },
-    checkMultiShotItem(multiShotItem) {
-      
-      const potentialEnemyUpLongId = multiShotItem.id - this.longDistance;
-      const potentialEnemyDownLongId = multiShotItem.id + this.longDistance;
-      const potentialEnemyUpShortId = multiShotItem.id - this.shortDistance;
-      const potentialEnemyDownShortId = multiShotItem.id + this.shortDistance;
-   this.CHECKERSCELL.forEach((q) => {
-    if(q.id === potentialEnemyUpLongId && !this.checkCheckerPos(q) ||
-     q.id === potentialEnemyDownLongId && !this.checkCheckerPos(q)|| 
-     q.id === potentialEnemyUpShortId && !this.checkCheckerPos(q) ||
-     q.id ===  potentialEnemyDownShortId && !this.checkCheckerPos(q) 
-    ) {
-      return  console.log(q, 'zaebalo') 
-       
-      } 
-   })
-      
+    canMultiShotItem(item) {
+      const potentialEnemyUpLongId = item.id - this.longDistance;
+      const potentialEnemyDownLongId = item.id + this.longDistance;
+      const potentialEnemyUpShortId = item.id - this.shortDistance;
+      const potentialEnemyDownShortId = item.id + this.shortDistance;
+      this.multiShotItem = {};
+      this.CHECKERSCELL.forEach((cell) => {
+        
+        if (
+          (cell.id === potentialEnemyUpLongId &&
+            this.checkCheckerPos(cell) &&
+            this.test.id - this.longDistance * 2 === potentialEnemyUpLongId) ||
+          (cell.id === potentialEnemyDownLongId &&
+            this.checkCheckerPos(cell) &&
+            this.test.id + this.longDistance * 2 === potentialEnemyDownLongId)
+        ) {
+          console.log(cell, "final 1");
+          cell.canShot = true;
+          this.pickChecker = this.test;
+          this.pickChecker.pick = true;
+          this.multiShotItem = item;
+          this.potentialKill.push(item);
+          return 
+        } else if (
+          (cell.id === potentialEnemyUpShortId &&
+            this.checkCheckerPos(cell) &&
+            this.test.id - this.shortDistance * 2 ===
+              potentialEnemyUpShortId) ||
+          (cell.id === potentialEnemyDownShortId &&
+            this.checkCheckerPos(cell) &&
+            this.test.id + this.shortDistance * 2 === potentialEnemyDownShortId)
+        ) {
+          console.log(cell, "final 2");
+          cell.canShot = true;
+          this.pickChecker = this.test;
+          this.pickChecker.pick = true;
+          this.multiShotItem = item;
+          this.potentialKill.push(item);
+          return 
+        }
+      });
     },
     checkShotPos(itemShotId) {
       this.CHECKERSCELL.forEach((checker) => {
@@ -236,8 +258,10 @@ export default {
         const shortShotId =
           itemShot.id + this.shortDistance * this.currentQueue;
         const longShotId = itemShot.id + this.longDistance * this.currentQueue;
-        const distanceLongShot = this.pickChecker.id + this.longDistance * 2 * this.currentQueue;
-        const distanceShortShot = this.pickChecker.id + this.shortDistance * 2 * this.currentQueue;
+        const distanceLongShot =
+          this.pickChecker.id + this.longDistance * 2 * this.currentQueue;
+        const distanceShortShot =
+          this.pickChecker.id + this.shortDistance * 2 * this.currentQueue;
         if (
           distanceShortShot === shortShotId &&
           checker.id === shortShotId &&
@@ -245,7 +269,9 @@ export default {
         ) {
           this.potentialKill.push(itemShot);
           this.potentialShot.push(checker);
-          return this.potentialShot.forEach(shotCell => shotCell.canShot = true);
+          return this.potentialShot.forEach(
+            (shotCell) => (shotCell.canShot = true)
+          );
         } else if (
           distanceLongShot === longShotId &&
           checker.id === longShotId &&
@@ -253,55 +279,65 @@ export default {
         ) {
           this.potentialKill.push(itemShot);
           this.potentialShot.push(checker);
-          return this.potentialShot.forEach(shotCell => shotCell.canShot = true);
+          return this.potentialShot.forEach(
+            (shotCell) => (shotCell.canShot = true)
+          );
         }
       });
     },
     checkMultiShot() {
-      const potentialEnemyUpLongId = this.test.id - this.longDistance * 2;
-      const potentialEnemyDownLongId = this.test.id + this.longDistance * 2;
-      const potentialEnemyUpShortId = this.test.id - this.shortDistance * 2;
-      const potentialEnemyDownShortId = this.test.id + this.shortDistance * 2;
+      const potentialEnemyUpLongId = this.test.id - this.longDistance;
+
+      const potentialEnemyDownLongId = this.test.id + this.longDistance;
+
+      const potentialEnemyUpShortId = this.test.id - this.shortDistance;
+
+      const potentialEnemyDownShortId = this.test.id + this.shortDistance;
+
       this.multiShotItem = {};
       this.CHECKERSCELL.forEach((checker) => {
-        
-       if(checker.id === potentialEnemyUpLongId && this.checkCheckerPos(checker) || 
-       checker.id ===  potentialEnemyDownLongId && this.checkCheckerPos(checker) || 
-       checker.id ===  potentialEnemyUpShortId && this.checkCheckerPos(checker) || 
-       checker.id ===  potentialEnemyDownShortId && this.checkCheckerPos(checker)
-       ) {
-        this.checkMultiShotItem(checker);
-        console.log(checker, 'alo')
-       
-       } 
-    
-
+        if (
+          (checker.id === potentialEnemyUpLongId &&
+            !this.checkCheckerPos(checker)) ||
+          (checker.id === potentialEnemyDownLongId &&
+            !this.checkCheckerPos(checker))
+        ) {
+          console.log(checker, "long");
+          this.canMultiShotItem(checker);
+        } else if (
+          (checker.id === potentialEnemyUpShortId &&
+            !this.checkCheckerPos(checker)) ||
+          (checker.id === potentialEnemyDownShortId &&
+            !this.checkCheckerPos(checker))
+        ) {
+          console.log(checker, "short");
+          this.canMultiShotItem(checker);
+        }
       });
 
-      this.canShots(this.multiShotItem);
-      console.log(this.multiShotItem, 'after multiShot');
+      console.log(this.multiShotItem, "after multiShot");
     },
   },
 
   computed: {
-    ...mapGetters([
-      "CHECKERSCELL"
-  ]),
+    ...mapGetters(["CHECKERSCELL"]),
     currentQueue() {
       if (
         (Object.keys(this.multiShotItem).length !== 0 &&
           this.multiShotItem.id > this.pickChecker.id) ||
         this.queue === "black"
       ) {
+        console.log('nado + 1')
         return 1;
-      } else {    
+      } else {
+        console.log('nado - 1')
         return -1;
       }
       // return this.queue === "black" ? 1 : -1;
     },
   },
- async mounted() {
-   await this.GET_CHECKERSCELL_FROM_API();
+  async mounted() {
+    await this.GET_CHECKERSCELL_FROM_API();
     if (this.turn === 1) {
       this.CHECKERSCELL.forEach((checkerCell) => {
         if (checkerCell.row <= 3 && checkerCell.color) {
