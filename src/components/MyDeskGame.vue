@@ -39,7 +39,6 @@ export default {
       queue: "white",
       endTurn: false,
       pickChecker: "",
-      helperTurn: [],
       youCanGo: [],
       potentialShot: [],
       potentialKill: [],
@@ -51,6 +50,17 @@ export default {
   },
   methods: {
     ...mapActions(["GET_CHECKERSCELL_FROM_API"]),
+    helperMultiShot(itemForKill) {
+      console.log(itemForKill);
+      console.log(this.test)
+      if(this.test.white === itemForKill.white || this.test.black === itemForKill.black) {
+        console.log('nelzya')
+        return false;
+      } else if(this.test.white !== itemForKill.white || this.test.black !== itemForKill.black) {
+        console.log('mozno')
+        return true;
+      }
+    },
     goTurn(handlerCell) {
       console.log(handlerCell);
       if (handlerCell.canShot === true) {
@@ -66,7 +76,7 @@ export default {
           ) {
             checker.black = false;
             handlerCell.white = true;
-            console.log('go kill white')
+            console.log("go kill white");
             handlerCell.black = false;
             this.queue = "black";
             this.theEndTurn();
@@ -76,7 +86,7 @@ export default {
           ) {
             checker.white = false;
             handlerCell.black = true;
-
+        
             handlerCell.white = false;
             this.queue = "white";
             this.theEndTurn();
@@ -186,30 +196,29 @@ export default {
       const potentialEnemyDownShortId = item.id + this.shortDistance;
       this.multiShotItem = {};
       this.CHECKERSCELL.forEach((cell) => {
-        
         if (
           (cell.id === potentialEnemyUpLongId &&
             this.checkCheckerPos(cell) &&
-            this.test.id - this.longDistance * 2 === potentialEnemyUpLongId) ||
+            this.test.id - this.longDistance * 2 === potentialEnemyUpLongId) &&  this.helperMultiShot(item)  ||
           (cell.id === potentialEnemyDownLongId &&
             this.checkCheckerPos(cell) &&
-            this.test.id + this.longDistance * 2 === potentialEnemyDownLongId)
+            this.test.id + this.longDistance * 2 === potentialEnemyDownLongId)  &&  this.helperMultiShot(item)
         ) {
-          console.log(cell, "final 1");
+          !console.log(cell, "final 1");
           cell.canShot = true;
           this.pickChecker = this.test;
           this.pickChecker.pick = true;
           this.multiShotItem = item;
           this.potentialKill.push(item);
-          return 
+          return;
         } else if (
           (cell.id === potentialEnemyUpShortId &&
             this.checkCheckerPos(cell) &&
             this.test.id - this.shortDistance * 2 ===
-              potentialEnemyUpShortId) ||
+              potentialEnemyUpShortId) &&  this.helperMultiShot(item) ||
           (cell.id === potentialEnemyDownShortId &&
             this.checkCheckerPos(cell) &&
-            this.test.id + this.shortDistance * 2 === potentialEnemyDownShortId)
+            this.test.id + this.shortDistance * 2 === potentialEnemyDownShortId) &&  this.helperMultiShot(item) 
         ) {
           console.log(cell, "final 2");
           cell.canShot = true;
@@ -217,7 +226,7 @@ export default {
           this.pickChecker.pick = true;
           this.multiShotItem = item;
           this.potentialKill.push(item);
-          return 
+          return;
         }
       });
     },
@@ -327,10 +336,10 @@ export default {
           this.multiShotItem.id > this.pickChecker.id) ||
         this.queue === "black"
       ) {
-        console.log('nado + 1')
+        console.log("nado + 1");
         return 1;
       } else {
-        console.log('nado - 1')
+        console.log("nado - 1");
         return -1;
       }
       // return this.queue === "black" ? 1 : -1;
