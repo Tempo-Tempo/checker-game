@@ -12,24 +12,23 @@
       <div
         @click.stop="turnBlack(checkerCell)"
         v-if="checkerCell.black"
-        class="checker"
+        class="checker_black"
         :class="{ pick_checker: checkerCell.pick }"
-      >
-        O
-      </div>
+      ></div>
       <div
         @click.stop="turnWhite(checkerCell)"
         v-if="checkerCell.white"
-        class="checker"
+        class="checker_white"
         :class="{ pick_checker: checkerCell.pick }"
-      >
-        X
-      </div>
+        :style="{ queenTest: checkerCell.queen }"
+      ></div>
     </div>
   </div>
   <button @click.stop="startOrRestartGame((turn = 1))">restart</button>
   <div>Ход {{ turn }}</div>
   <div>{{ this.test }}</div>
+  <div>Срубленно Белых: {{ deadWhiteCheckers }}</div>
+  <div>Срубленно Черных: {{ deadBlackCheckers }}</div>
 </template>
 
 <script>
@@ -52,6 +51,8 @@ export default {
       turnName: "Очередь белых",
       forWhiteQueens: [],
       forBlackQueens: [],
+      deadWhiteCheckers: 0,
+      deadBlackCheckers: 0,
     };
   },
   methods: {
@@ -69,36 +70,37 @@ export default {
         return true;
       }
     },
-    goTurn(handlerCell) {
-      console.log(handlerCell);
-      if (handlerCell.canShot === true) {
-        this.pickedCheckerAfterMultiShot = handlerCell;
-        this.potentialKill.forEach((checker) => {
-          const currentShotLongId =
-            handlerCell.id + -this.longDistance * this.currentQueue;
-          const currentShotShortId =
-            handlerCell.id + -this.shortDistance * this.currentQueue;
-          if (
-            (checker.black && checker.id === currentShotLongId) ||
-            (checker.black && checker.id === currentShotShortId)
-          ) {
-            checker.black = false;
-            handlerCell.white = true;
-            handlerCell.black = false;
-            this.queue = "black";
-            this.theEndTurn();
-          } else if (
-            (checker.white && checker.id === currentShotLongId) ||
-            (checker.white && checker.id === currentShotShortId)
-          ) {
-            checker.white = false;
-            handlerCell.black = true;
-            handlerCell.white = false;
-            this.queue = "white";
-            this.theEndTurn();
-          }
-        });
-      }
+    goKillEnemy(handlerCell) {
+      this.pickedCheckerAfterMultiShot = handlerCell;
+      this.potentialKill.forEach((checker) => {
+        const currentShotLongId =
+          handlerCell.id + -this.longDistance * this.currentQueue;
+        const currentShotShortId =
+          handlerCell.id + -this.shortDistance * this.currentQueue;
+        if (
+          (checker.black && checker.id === currentShotLongId) ||
+          (checker.black && checker.id === currentShotShortId)
+        ) {
+          checker.black = false;
+          handlerCell.white = true;
+          this.deadBlackCheckers += 1;
+          handlerCell.black = false;
+          this.queue = "black";
+          this.theEndTurn();
+        } else if (
+          (checker.white && checker.id === currentShotLongId) ||
+          (checker.white && checker.id === currentShotShortId)
+        ) {
+          checker.white = false;
+          handlerCell.black = true;
+          handlerCell.white = false;
+          this.deadWhiteCheckers += 1;
+          this.queue = "white";
+          this.theEndTurn();
+        }
+      });
+    },
+    goStepWhite(handlerCell) {
       if (
         this.turn >= 1 &&
         this.queue === "white" &&
@@ -111,6 +113,8 @@ export default {
         this.pickChecker = "";
         return this.theEndTurn();
       }
+    },
+    goStepBlack(handlerCell) {
       if (
         this.turn >= 1 &&
         this.queue === "black" &&
@@ -124,6 +128,21 @@ export default {
         return this.theEndTurn();
       }
     },
+
+    goTurn(handlerCell) {
+      console.log(handlerCell);
+      if(!this.checkCheckerPos(handlerCell)) return;
+      if (this.pickChecker.queen) {
+        console.log(this.pickChecker, 'queen');
+        this.pickChecker.queen = false;
+        handlerCell.queen = true;
+      } else if(handlerCell.canShot === true) {
+        this.goKillEnemy(handlerCell);
+      }
+      this.goStepWhite(handlerCell);
+      this.goStepBlack(handlerCell);
+    },
+
     turnBlack(checkerBlack) {
       if (this.queue !== "black") return;
       this.pickChecker = checkerBlack;
@@ -131,7 +150,6 @@ export default {
         checker.canShot = false;
         checker.pick = false;
         if (checker.queen && checker.black) {
-          console.log(checker);
           this.findTurnForQueen(checker);
         } else if (checker === this.pickChecker && checker.black) {
           checker.pick = true;
@@ -334,17 +352,30 @@ export default {
       });
     },
     findTurnForQueen(anyQueen) {
-      this.CHECKERSCELL.forEach((checker) => {
+      this.CHECKERSCELL.filter((checker) => {
         if (
           (Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
-            this.checkCheckerPos(checker)) ||
-          (Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
-            this.checkCheckerPos(checker))
+            anyQueen === this.pickChecker) &&  this.checkCheckerPos(checker) ||
+          (Number.isInteger((checker.id - anyQueen.id) / this.shortDistance)  &&
+            anyQueen === this.pickChecker) && this.checkCheckerPos(checker)
         ) {
-          console.log(checker);
           checker.canStep = true;
+          this.findKillForQueen(checker);
+        } else {
+          checker.canStep = false;
         }
       });
+    },
+    findKillForQueen(potencialKill) {
+      console.log('work', potencialKill);
+      console.log(this.pickChecker)
+      if(this.pickChecker.black && potencialKill.white) {
+       
+        console.log(potencialKill, 'kill white')
+      } else if (this.pickChecker.white && potencialKill.black) {
+        console.log(potencialKill, 'kill black')
+        
+      }
     },
     theEndTurn() {
       this.CHECKERSCELL.forEach((checker) => {
@@ -357,7 +388,6 @@ export default {
         }
       });
       this.endTurn = !this.endTurn;
-      this.checkMultiShot();
     },
   },
 
@@ -372,9 +402,9 @@ export default {
     },
     test() {
       if (this.currentQueue === 1 || this.multiShotItem.white) {
-        return this.turnName = "Очередь черных";
+        return (this.turnName = "Очередь черных");
       } else {
-        return this.turnName = "Очередь белых";
+        return (this.turnName = "Очередь белых");
       }
     },
   },
@@ -386,11 +416,12 @@ export default {
     endTurn() {
       this.turn += 1;
       console.log(this.queue);
+      this.checkMultiShot();
       this.timeToQueen();
     },
-
     youCanGo() {
       this.youCanGo.forEach((checker) => {
+        console.log(checker);
         if (this.checkCheckerPos(checker)) {
           checker.canStep = true;
         }
@@ -409,6 +440,9 @@ export default {
 </script>
 
 <style scoped>
+.queenTest {
+  background: red;
+}
 .pick_checker {
   transform: scale(1.1, 1.1);
   opacity: 0.5;
@@ -427,9 +461,21 @@ export default {
   box-shadow: 1px 1px 10px white;
 }
 
-.checker {
-  font-size: 90px;
-  color: rgb(115, 48, 14);
+.checker_black {
+  background: black;
+  border: 3px white solid;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.checker_white {
+  background: white;
+  border: 3px black solid;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
   cursor: pointer;
 }
 .colum_items {
@@ -457,7 +503,7 @@ export default {
 }
 
 .black {
-  background: #000;
+  background: #000000cd;
 }
 
 .pre_turn {
