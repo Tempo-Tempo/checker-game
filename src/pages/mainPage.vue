@@ -1,16 +1,17 @@
 <template>
    <div class="bg_for_desk">
       <my-desk-game></my-desk-game>
+      <kills-counter></kills-counter>
    </div>
 </template>
 <script>
 import MyDeskGame from '../components/MyDeskGame.vue';
-
+import KillsCounter from '@/components/KillsCounter.vue';
 export default {
    name: 'mainPage',
    components: {
-      MyDeskGame
-     
+      MyDeskGame,
+      KillsCounter,
    },
 }
 </script>

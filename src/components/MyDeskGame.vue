@@ -26,9 +26,6 @@
   </div>
   <button @click.stop="startOrRestartGame((turn = 1))">restart</button>
   <div>Ход {{ turn }}</div>
-  <div>{{ this.test }}</div>
-  <div>Срубленно Белых: {{ deadWhiteCheckers }}</div>
-  <div>Срубленно Черных: {{ deadBlackCheckers }}</div>
 </template>
 
 <script>
@@ -51,12 +48,10 @@ export default {
       turnName: "Очередь белых",
       forWhiteQueens: [],
       forBlackQueens: [],
-      deadWhiteCheckers: 0,
-      deadBlackCheckers: 0,
     };
   },
   methods: {
-    ...mapActions(["GET_CHECKERSCELL_FROM_API"]),
+    ...mapActions(["GET_CHECKERSCELL_FROM_API", "PUSH_DEAD_BLACK_CHECKER", "PUSH_DEAD_WHITE_CHECKER", "CLEAR_DEAD_CHECKER"], ),
     helperMultiShot(itemForKill) {
       if (
         this.pickedCheckerAfterMultiShot.white === itemForKill.white ||
@@ -83,7 +78,7 @@ export default {
         ) {
           checker.black = false;
           handlerCell.white = true;
-          this.deadBlackCheckers += 1;
+          this.PUSH_DEAD_BLACK_CHECKER();
           handlerCell.black = false;
           this.queue = "black";
           this.theEndTurn();
@@ -94,7 +89,7 @@ export default {
           checker.white = false;
           handlerCell.black = true;
           handlerCell.white = false;
-          this.deadWhiteCheckers += 1;
+        this.PUSH_DEAD_WHITE_CHECKER();
           this.queue = "white";
           this.theEndTurn();
         }
@@ -131,12 +126,16 @@ export default {
 
     goTurn(handlerCell) {
       console.log(handlerCell);
-      if(!this.checkCheckerPos(handlerCell)) return;
+      if (!this.checkCheckerPos(handlerCell)) return;
       if (this.pickChecker.queen) {
-        console.log(this.pickChecker, 'queen');
         this.pickChecker.queen = false;
         handlerCell.queen = true;
-      } else if(handlerCell.canShot === true) {
+       this.potentialKill.forEach((item) => {
+        item.black = false;
+        item.white = false;
+        
+       })
+      } else if (handlerCell.canShot === true) {
         this.goKillEnemy(handlerCell);
       }
       this.goStepWhite(handlerCell);
@@ -324,6 +323,7 @@ export default {
     startOrRestartGame() {
       if (this.turn === 1) {
         this.queue = "white";
+        this.CLEAR_DEAD_CHECKER();
         this.CHECKERSCELL.forEach((checkerCell) => {
           checkerCell.canShot = false;
           checkerCell.canStep = false;
@@ -331,8 +331,10 @@ export default {
           this.turnName = "Очередь белых";
           if (checkerCell.row <= 3 && checkerCell.color) {
             checkerCell.black = true;
+            checkerCell.white = false;
           } else if (checkerCell.row >= 6 && checkerCell.color) {
             checkerCell.white = true;
+            checkerCell.black = false;
           } else {
             checkerCell.black = false;
             checkerCell.white = false;
@@ -355,26 +357,33 @@ export default {
       this.CHECKERSCELL.filter((checker) => {
         if (
           (Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
-            anyQueen === this.pickChecker) &&  this.checkCheckerPos(checker) ||
-          (Number.isInteger((checker.id - anyQueen.id) / this.shortDistance)  &&
-            anyQueen === this.pickChecker) && this.checkCheckerPos(checker)
+            anyQueen === this.pickChecker &&
+            this.checkCheckerPos(checker)) ||
+          (Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
+            anyQueen === this.pickChecker &&
+            this.checkCheckerPos(checker))
         ) {
           checker.canStep = true;
+        } else if (
+          (Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
+            anyQueen === this.pickChecker &&
+            !this.checkCheckerPos(checker)) ||
+          (Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
+            anyQueen === this.pickChecker &&
+            !this.checkCheckerPos(checker))
+        ) {
           this.findKillForQueen(checker);
-        } else {
           checker.canStep = false;
         }
       });
     },
-    findKillForQueen(potencialKill) {
-      console.log('work', potencialKill);
-      console.log(this.pickChecker)
-      if(this.pickChecker.black && potencialKill.white) {
-       
-        console.log(potencialKill, 'kill white')
-      } else if (this.pickChecker.white && potencialKill.black) {
-        console.log(potencialKill, 'kill black')
-        
+    findKillForQueen(itemKill) {
+      if (this.pickChecker.black && itemKill.white) {
+        console.log(itemKill, "kill white");
+        this.potentialKill.push(itemKill)
+      } else if (this.pickChecker.white && itemKill.black) {
+        console.log(itemKill, "kill black");
+        this.potentialKill.push(itemKill)
       }
     },
     theEndTurn() {
@@ -389,22 +398,16 @@ export default {
       });
       this.endTurn = !this.endTurn;
     },
+   
   },
 
   computed: {
-    ...mapGetters(["CHECKERSCELL"]),
+    ...mapGetters(["CHECKERSCELL", "DEADBLACKCHECKERS", "DEADWHITECHECKERS"],),
     currentQueue() {
       if (Object.keys(this.multiShotItem).length !== 0) {
         return this.pickChecker.id > this.multiShotItem.id ? -1 : 1;
       } else {
         return this.queue === "black" ? 1 : -1;
-      }
-    },
-    test() {
-      if (this.currentQueue === 1 || this.multiShotItem.white) {
-        return (this.turnName = "Очередь черных");
-      } else {
-        return (this.turnName = "Очередь белых");
       }
     },
   },
@@ -415,20 +418,17 @@ export default {
   watch: {
     endTurn() {
       this.turn += 1;
-      console.log(this.queue);
       this.checkMultiShot();
       this.timeToQueen();
     },
     youCanGo() {
       this.youCanGo.forEach((checker) => {
-        console.log(checker);
         if (this.checkCheckerPos(checker)) {
           checker.canStep = true;
         }
       });
     },
     pickChecker() {
-      console.log(this.pickChecker);
       this.CHECKERSCELL.forEach((checker) => {
         if (checker.id === this.pickChecker.id) {
           checker.pick = true;
@@ -452,7 +452,7 @@ export default {
   width: 1120px;
   height: 840px;
   position: absolute;
-  left: 50%;
+  left: 47%;
   top: 50%;
   transform: translate(-50%, -50%);
   display: flex;
