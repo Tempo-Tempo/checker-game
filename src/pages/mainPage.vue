@@ -1,18 +1,25 @@
 <template>
    <div class="bg_for_desk">
-      <my-desk-game></my-desk-game>
+      <my-desk-game @currentTurn="currentTurn"></my-desk-game>
       <kills-counter></kills-counter>
+      <track-for-quere :currentTurn="turnName"></track-for-quere>
    </div>
 </template>
 <script>
-import MyDeskGame from '../components/MyDeskGame.vue';
-import KillsCounter from '@/components/KillsCounter.vue';
+
+
 export default {
-   name: 'mainPage',
-   components: {
-      MyDeskGame,
-      KillsCounter,
-   },
+   name: 'MainPage',
+   data() {
+      return {
+         turnName: 1,
+      }
+   }, 
+   methods: {
+      currentTurn(num) {
+         this.turnName = num;
+      },
+   }
 }
 </script>
 

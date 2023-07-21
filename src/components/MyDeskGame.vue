@@ -24,12 +24,27 @@
       ></div>
     </div>
   </div>
-  <button @click.stop="startOrRestartGame((turn = 1))">restart</button>
-  <div>Ход {{ turn }}</div>
+  <my-buttons
+    v-if="Object.keys(this.multiShotItem).length !== 0"
+    @anyClick="nextTurn((turn += 1))"
+  >
+    Закончить ход
+  </my-buttons>
+  <div class="area_for_btn_next_turn">
+    <div class="text_for_trun">Ход {{ turn }}</div>
+  </div>
+
+  <div class="area_for_btn_new_game">
+    <my-buttons @anyClick="startOrRestartGame((turn = 1))"
+      >Новая игра</my-buttons
+    >
+    <div>{{ turnName }}</div>
+  </div>
 </template>
 
-<script>
+<script>  
 import { mapActions, mapGetters } from "vuex";
+
 export default {
   name: "MyDeskGame",
   data() {
@@ -46,12 +61,34 @@ export default {
       multiShotItem: {},
       pickedCheckerAfterMultiShot: {},
       turnName: "Очередь белых",
+      helperTurn: {},
       forWhiteQueens: [],
       forBlackQueens: [],
     };
   },
   methods: {
-    ...mapActions(["GET_CHECKERSCELL_FROM_API", "PUSH_DEAD_BLACK_CHECKER", "PUSH_DEAD_WHITE_CHECKER", "CLEAR_DEAD_CHECKER"], ),
+    ...mapActions([
+      "GET_CHECKERSCELL_FROM_API",
+      "PUSH_DEAD_BLACK_CHECKER",
+      "PUSH_DEAD_WHITE_CHECKER",
+      "CLEAR_DEAD_CHECKER",
+    ]),
+    nextTurn() {
+      console.log(this.multiShotItem);
+      if (this.pickChecker.black) {
+        this.queue === "white";
+        this.pickChecker.pick = false;
+        this.pickChecker = "";
+        this.multiShotItem = {};
+        return this.CHECKERSCELL.forEach((q) => (q.canShot = false));
+      } else {
+        this.queue === "black";
+        this.pickChecker.pick = false;
+        this.pickChecker = "";
+        this.multiShotItem = {};
+        return this.CHECKERSCELL.forEach((q) => (q.canShot = false));
+      }
+    },
     helperMultiShot(itemForKill) {
       if (
         this.pickedCheckerAfterMultiShot.white === itemForKill.white ||
@@ -89,7 +126,7 @@ export default {
           checker.white = false;
           handlerCell.black = true;
           handlerCell.white = false;
-        this.PUSH_DEAD_WHITE_CHECKER();
+          this.PUSH_DEAD_WHITE_CHECKER();
           this.queue = "white";
           this.theEndTurn();
         }
@@ -123,27 +160,31 @@ export default {
         return this.theEndTurn();
       }
     },
-
     goTurn(handlerCell) {
       console.log(handlerCell);
       if (!this.checkCheckerPos(handlerCell)) return;
       if (this.pickChecker.queen) {
         this.pickChecker.queen = false;
         handlerCell.queen = true;
-       this.potentialKill.forEach((item) => {
-        item.black = false;
-        item.white = false;
-        
-       })
+        this.potentialKill.forEach((item) => {
+          item.black = false;
+          item.white = false;
+        });
       } else if (handlerCell.canShot === true) {
         this.goKillEnemy(handlerCell);
       }
       this.goStepWhite(handlerCell);
       this.goStepBlack(handlerCell);
+      this.currentTurn(handlerCell);
     },
 
     turnBlack(checkerBlack) {
-      if (this.queue !== "black") return;
+      if (
+        this.queue !== "black" ||
+        Object.keys(this.multiShotItem).length !== 0
+      )
+        return;
+      console.log(this.multiShotItem);
       this.pickChecker = checkerBlack;
       this.CHECKERSCELL.filter((checker) => {
         checker.canShot = false;
@@ -157,7 +198,12 @@ export default {
       });
     },
     turnWhite(checkerWhite) {
-      if (this.queue !== "white") return;
+      if (
+        this.queue !== "white" ||
+        Object.keys(this.multiShotItem).length !== 0
+      )
+        return;
+      console.log(this.multiShotItem);
       this.pickChecker = checkerWhite;
       this.CHECKERSCELL.filter((checker) => {
         checker.canShot = false;
@@ -186,7 +232,6 @@ export default {
       const potentialEnemyDownLongId = item.id + this.longDistance;
       const potentialEnemyUpShortId = item.id - this.shortDistance;
       const potentialEnemyDownShortId = item.id + this.shortDistance;
-
       this.CHECKERSCELL.forEach((cell) => {
         if (
           (cell.id === potentialEnemyUpLongId &&
@@ -328,6 +373,7 @@ export default {
           checkerCell.canShot = false;
           checkerCell.canStep = false;
           checkerCell.pick = false;
+          checkerCell.queen = false;
           this.turnName = "Очередь белых";
           if (checkerCell.row <= 3 && checkerCell.color) {
             checkerCell.black = true;
@@ -380,10 +426,20 @@ export default {
     findKillForQueen(itemKill) {
       if (this.pickChecker.black && itemKill.white) {
         console.log(itemKill, "kill white");
-        this.potentialKill.push(itemKill)
+        this.potentialKill.push(itemKill);
       } else if (this.pickChecker.white && itemKill.black) {
         console.log(itemKill, "kill black");
-        this.potentialKill.push(itemKill)
+        this.potentialKill.push(itemKill);
+      }
+    },
+    currentTurn(turnItem) {
+      console.log(turnItem)
+      if (turnItem.black && Object.keys(this.multiShotItem).length === 0) {
+        this.turnName = 'Очередь белых'
+       return this.$emit('currentTurn', 1);
+      } else if ( turnItem.white && Object.keys(this.multiShotItem).length === 0) {
+        this.turnName = 'Очередь черных'
+      return  this.$emit('currentTurn', 0);
       }
     },
     theEndTurn() {
@@ -397,12 +453,12 @@ export default {
         }
       });
       this.endTurn = !this.endTurn;
+      
     },
    
   },
-
   computed: {
-    ...mapGetters(["CHECKERSCELL", "DEADBLACKCHECKERS", "DEADWHITECHECKERS"],),
+    ...mapGetters(["CHECKERSCELL", "DEADBLACKCHECKERS", "DEADWHITECHECKERS"]),
     currentQueue() {
       if (Object.keys(this.multiShotItem).length !== 0) {
         return this.pickChecker.id > this.multiShotItem.id ? -1 : 1;
@@ -416,10 +472,14 @@ export default {
     this.startOrRestartGame();
   },
   watch: {
+    currentQueue() {
+      console.log(this.currentQueue);
+    },
     endTurn() {
       this.turn += 1;
       this.checkMultiShot();
       this.timeToQueen();
+     
     },
     youCanGo() {
       this.youCanGo.forEach((checker) => {
@@ -429,6 +489,7 @@ export default {
       });
     },
     pickChecker() {
+      this.helperTurn = this.pickChecker;
       this.CHECKERSCELL.forEach((checker) => {
         if (checker.id === this.pickChecker.id) {
           checker.pick = true;
@@ -440,6 +501,32 @@ export default {
 </script>
 
 <style scoped>
+.text_for_trun {
+  font-size: 18px;
+  color: white;
+  font-weight: bold;
+}
+
+.area_for_btn_next_turn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 10%;
+  width: 60px;
+  height: 60px;
+  background: #000;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid white;
+}
+.area_for_btn_new_game {
+  position: absolute;
+  top: 1%;
+  left: 2%;
+  z-index: 1;
+}
 .queenTest {
   background: red;
 }
@@ -449,23 +536,22 @@ export default {
   transition: 0.4s;
 }
 .my_desk {
-  width: 1120px;
-  height: 840px;
+  width: 920px;
   position: absolute;
-  left: 47%;
+  left: 47.5%;
   top: 50%;
   transform: translate(-50%, -50%);
   display: flex;
   flex-wrap: wrap;
-  border: 1px solid black;
-  box-shadow: 1px 1px 10px white;
+  border: 4px solid #463013;
+  box-shadow: 2px 2px 10px rgb(14, 1, 1);
 }
 
 .checker_black {
   background: black;
   border: 3px white solid;
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   cursor: pointer;
 }
@@ -473,8 +559,8 @@ export default {
 .checker_white {
   background: white;
   border: 3px black solid;
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   cursor: pointer;
 }
@@ -492,8 +578,8 @@ export default {
 }
 
 .item_cell_white {
-  width: 140px;
-  height: 105px;
+  width: 115px;
+  height: 85px;
   background: white;
   float: left;
   position: relative;
@@ -508,15 +594,15 @@ export default {
 
 .pre_turn {
   background: green;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
 }
 
 .can_shot {
   background: red;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
 }
 

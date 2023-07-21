@@ -1,22 +1,25 @@
 <template>
   <div class="task">
     1. Исправить чудовищно плохой код в методе goTurn, много лишних if, и целом декомпоз(пока что просто вынес это в разные методы)
+    3. Сделать очередность чтоб не сбивалась и отпавлять ее в новый компонент
     2. Очень много багов с дамкой, после переключения с обычной на дамку, canStep не пропадает(именно у черных), рубит всех кто попадает в массив potetialKill, и переступает через свои
   </div>
 
   <mainPage> </mainPage>
+ 
 </template>
 
 <script>
-import mainPage from "./pages/mainPage.vue";
+
+
 
 export default {
-  components: { mainPage },
   name: "App",
 };
 </script>
 
-<style>
+<style
+    KillsCounter>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -36,6 +39,7 @@ body {
 }
 
 .task {
+  position: absolute;
   font-size: 20px;
 }
 </style>

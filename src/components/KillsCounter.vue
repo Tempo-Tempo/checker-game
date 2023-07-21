@@ -12,7 +12,7 @@
 <script>
 import { mapGetters } from 'vuex';
 export default {
-  name: "killsCounter",
+  name: "KillsCounter",
   data() {
     return {};
   },
@@ -25,10 +25,10 @@ export default {
 <style scoped>
 
 .wrapper_for_dead_checkers {
-   width: 19%;
-  height: 840px;
+   width: 15%;
+  height: 690px;
   position: absolute;
-  right: 2%;
+  right: 12%;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
@@ -52,8 +52,8 @@ export default {
 .checker_black {
   background: black;
   border: 3px white solid;
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   cursor: pointer;
 }
@@ -61,8 +61,8 @@ export default {
 .checker_white {
   background: white;
   border: 3px black solid;
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   cursor: pointer;
 }
