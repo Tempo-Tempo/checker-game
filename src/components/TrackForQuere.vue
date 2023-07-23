@@ -40,6 +40,7 @@ export default {
   display: flex;
   justify-content: center;
  align-items: center;
+ transition: 0.6s;
 }
 .turn_white {
    width: 100%;
@@ -49,6 +50,7 @@ export default {
    display: flex;
   justify-content: center;
  align-items: center;
+ transition: 0.6s;
 }
 
 .text_for_black {
