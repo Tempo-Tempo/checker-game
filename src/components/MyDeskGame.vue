@@ -66,6 +66,9 @@ export default {
       forBlackQueens: [],
       turnItem: {},
       currentNumQuere: 1,
+      closedStepForQueen: [],
+      closedStepFriendlyForQueen: [],
+      reuslt: [],
     };
   },
   methods: {
@@ -105,8 +108,8 @@ export default {
       }
     },
     goKillEnemy(handlerCell) {
-      console.log(handlerCell)
-      if(!handlerCell.canShot) return;
+      console.log(handlerCell);
+      if (!handlerCell.canShot) return;
       this.pickedCheckerAfterMultiShot = handlerCell;
       this.potentialKill.forEach((checker) => {
         const currentShotLongId =
@@ -122,7 +125,7 @@ export default {
           this.PUSH_DEAD_BLACK_CHECKER();
           handlerCell.black = false;
           this.queue = "black";
-          console.log('work3')
+          console.log("work3");
           this.theEndTurn();
         } else if (
           (checker.white && checker.id === currentShotLongId) ||
@@ -133,7 +136,7 @@ export default {
           handlerCell.white = false;
           this.PUSH_DEAD_WHITE_CHECKER();
           this.queue = "white";
-          console.log('work4')
+          console.log("work4");
           this.theEndTurn();
         }
       });
@@ -170,10 +173,9 @@ export default {
       console.log(handlerCell);
       if (!this.checkCheckerPos(handlerCell)) return;
       if (this.pickChecker.queen) {
-        console.log('work0')
+        console.log("work0");
         this.pickChecker.queen = false;
         handlerCell.queen = true;
-      
       }
       this.goKillEnemy(handlerCell);
       this.goStepWhite(handlerCell);
@@ -182,7 +184,11 @@ export default {
       this.currentTurn();
     },
     turnBlack(checkerBlack) {
-      if (this.queue !== "black" || Object.keys(this.multiShotItem).length !== 0) return;
+      if (
+        this.queue !== "black" ||
+        Object.keys(this.multiShotItem).length !== 0
+      )
+        return;
       this.pickChecker = checkerBlack;
       this.CHECKERSCELL.filter((checker) => {
         checker.canShot = false;
@@ -196,7 +202,11 @@ export default {
       });
     },
     turnWhite(checkerWhite) {
-      if (this.queue !== "white" || Object.keys(this.multiShotItem).length !== 0) return;
+      if (
+        this.queue !== "white" ||
+        Object.keys(this.multiShotItem).length !== 0
+      )
+        return;
       this.pickChecker = checkerWhite;
       this.CHECKERSCELL.filter((checker) => {
         checker.canShot = false;
@@ -394,98 +404,226 @@ export default {
       });
     },
     findStepForQueen(anyQueen) {
-      // let testLongKills = [];
       this.CHECKERSCELL.filter((checker) => {
         checker.canStep = false;
-        if (
-          (Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
-            anyQueen === this.pickChecker &&
-            this.checkCheckerPos(checker))
+        this.checkStepsForQueenFriendly(checker, anyQueen); 
+        if (  // ЗДЕСЬ ВСЕ НЕ РАБОАЕТ Логика такая: если id шашки (белая/черная на пути) меньше id шашек, 
+              // которые блокируют вставая рядом, то мы делаем функцию test1
+          this.reuslt.length !== 0 &&
+          Math.min.apply(null, this.reuslt) < 
+            Math.min.apply(null, this.closedStepForQueen)
         ) {
-          console.log('longStepQueen', checker)
-          checker.canStep = true;
-         } else if(Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
-            anyQueen === this.pickChecker &&
-            !this.checkCheckerPos(checker)  && checker.color && this.pickChecker !== checker) {
-              this.testKillLongQueen(checker, 'long');
-            }
-         if ((Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
-            anyQueen === this.pickChecker &&
-            this.checkCheckerPos(checker))) {
-              console.log('shortSTepQueen', checker)
-              checker.canStep = true;
-            } else if(Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
-            anyQueen === this.pickChecker &&
-            !this.checkCheckerPos(checker) && checker.color && this.pickChecker !== checker) {
-              console.log(checker, 'short')
-              this.testKillLongQueen(checker, 'short');
-            }
-         
-         // else if (
-        //   (Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
-        //     anyQueen === this.pickChecker &&
-        //     !this.checkCheckerPos(checker)) ||
-        //   (Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
-        //     anyQueen === this.pickChecker &&
-        //     !this.checkCheckerPos(checker))
-        // ) {
-        //   this.findKillForQueen(checker);
-        //   checker.canStep = false;
-        // }
+          this.test1(checker, anyQueen);
+        } else if (
+          this.reuslt.length !== 0 &&
+          Math.min.apply(null, this.reuslt) >
+            Math.min.apply(null, this.closedStepForQueen)
+            
+        ) {
+          this.test2(checker, anyQueen);
+         } // ЗДЕСЬ ВСЕ НЕ РАБОАЕТ 
+         else {
+          this.findBlockStepsForQueen(checker, anyQueen);
+          this.findStepLongForQueen(checker, anyQueen);
+          this.findStepShortForQueen(checker, anyQueen);
+        }
       });
     },
-    // findKillForQueen(itemKill) {
-    //   const longDistanceUpId = itemKill.id + this.longDistance;
-    //   const longDistanceDownId = itemKill.id - this.longDistance;
-    //   const shortDistanceUpId = itemKill.id + this.shortDistance;
-    //   const shortDistanceDownId = itemKill.id - this.shortDistance;
-    //   this.CHECKERSCELL.forEach((checker) => {
-    //     if (this.pickChecker.black && itemKill.white && checker.id === longDistanceUpId &&  checker.canStep
-    //     ||this.pickChecker.black && itemKill.white && checker.id === longDistanceDownId &&  checker.canStep
-    //     ||this.pickChecker.black && itemKill.white && checker.id === shortDistanceDownId &&  checker.canStep
-    //     ||this.pickChecker.black && itemKill.white && checker.id === shortDistanceUpId &&  checker.canStep
-    //     ) {
-    //     console.log(itemKill, "kill white");
-    //     console.log(checker)
-      
-    //   } else if (this.pickChecker.white && itemKill.black && checker.id === longDistanceUpId &&  checker.canStep
-    //     ||this.pickChecker.white && itemKill.black && checker.id === longDistanceDownId && checker.canStep
-    //     ||this.pickChecker.white && itemKill.black && checker.id === shortDistanceDownId &&  checker.canStep
-    //     ||this.pickChecker.white && itemKill.black && checker.id === shortDistanceUpId &&  checker.canStep
-    //     ) {
-    //     console.log(itemKill, "kill black");
-    //     console.log(checker)
-        
-    //   }
-    //   })
-    // },
-      testKillLongQueen(itemKill, distance) {
-        if(distance === 'long') {
-          const longMinusId = itemKill.id - this.longDistance;
-          const longPlusId = itemKill.id + this.longDistance;
-          this.CHECKERSCELL.forEach((checker) => {
-            if(checker.id === longMinusId && !this.checkCheckerPos(checker)  && checker.color && this.pickChecker !== checker || checker.id === longPlusId && !this.checkCheckerPos(checker)  && checker.color && this.pickChecker !== checker ) {
-              console.log(checker, 'eti rubit nelza LONG')
-            } 
-          })
-        } else if (distance === 'short') {
-          const shortMinusId = itemKill.id - this.shortDistance;
-          const shortPlusId = itemKill.id + this.shortDistance;
-          this.CHECKERSCELL.forEach((checker) => {
-            if(checker.id === shortMinusId && !this.checkCheckerPos(checker) && checker.color && this.pickChecker !== checker || checker.id === shortPlusId && !this.checkCheckerPos(checker)  && checker.color && this.pickChecker !== checker) {
-              console.log(checker, 'eti rubit nelza SHORT')
-            } 
-          })
+    findStepLongForQueen(checker, anyQueen) {
+      if (anyQueen.id < Math.min.apply(null, this.closedStepForQueen)) {
+        if (
+          checker.id < Math.min.apply(null, this.closedStepForQueen) &&
+          Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
+          anyQueen === this.pickChecker &&
+          this.checkCheckerPos(checker)
+        ) {
+          checker.canStep = true;
+          return;
+        } else if (
+          anyQueen.id > Math.min.apply(null, this.closedStepForQueen)
+        ) {
+          if (
+            checker.id > Math.max.apply(null, this.closedStepForQueen) &&
+            Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
+            anyQueen === this.pickChecker &&
+            this.checkCheckerPos(checker)
+          ) {
+            checker.canStep = true;
+            return;
+          }
         }
-      },
+      }
+    },
+    findStepShortForQueen(checker, anyQueen) {
+      if (anyQueen.id < Math.min.apply(null, this.closedStepForQueen)) {
+        if (
+          checker.id < Math.min.apply(null, this.closedStepForQueen) &&
+          Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
+          anyQueen === this.pickChecker &&
+          this.checkCheckerPos(checker)
+        ) {
+          checker.canStep = true;
+          return;
+        } else if (
+          anyQueen.id > Math.min.apply(null, this.closedStepForQueen)
+        ) {
+          if (
+            checker.id > Math.max.apply(null, this.closedStepForQueen) &&
+            Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
+            anyQueen === this.pickChecker &&
+            this.checkCheckerPos(checker)
+          ) {
+            checker.canStep = true;
+            return;
+          }
+        }
+      }
+    },
+    findBlockStepsForQueen(checker, anyQueen) {
+      if (
+        Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
+        anyQueen === this.pickChecker &&
+        !this.checkCheckerPos(checker) &&
+        checker.color &&
+        this.pickChecker !== checker
+      ) {
+        this.blockStepsForQueen(checker, "short");
+      } else if (
+        Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
+        anyQueen === this.pickChecker &&
+        !this.checkCheckerPos(checker) &&
+        checker.color &&
+        this.pickChecker !== checker
+      ) {
+        this.blockStepsForQueen(checker, "long");
+      }
+    },
+    blockStepsForQueen(itemKill, distance) {
+      const longMinusId = itemKill.id - this.longDistance;
+      const longPlusId = itemKill.id + this.longDistance;
+      const shortMinusId = itemKill.id - this.shortDistance;
+      const shortPlusId = itemKill.id + this.shortDistance;
+      this.CHECKERSCELL.forEach((checker) => {
+        if (
+          (distance === "long" &&
+            checker.id === longMinusId &&
+            !this.checkCheckerPos(checker) &&
+            checker.color &&
+            this.pickChecker !== checker) ||
+          (distance === "long" &&
+            checker.id === longPlusId &&
+            !this.checkCheckerPos(checker) &&
+            checker.color &&
+            this.pickChecker !== checker)
+        ) {
+          this.closedStepForQueen.push(checker.id);
+        } else if (
+          (distance === "short" &&
+            checker.id === shortMinusId &&
+            !this.checkCheckerPos(checker) &&
+            checker.color &&
+            this.pickChecker !== checker) ||
+          (distance === "short" &&
+            checker.id === shortPlusId &&
+            !this.checkCheckerPos(checker) &&
+            checker.color &&
+            this.pickChecker !== checker)
+        ) {
+          this.closedStepForQueen.push(checker.id);
+        }
+      });
+    },
+    checkStepsForQueenFriendly(checker, anyQueen) {
+      if (
+        (Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
+          anyQueen === this.pickChecker &&
+          !this.checkCheckerPos(checker) &&
+          checker.color &&
+          this.pickChecker !== checker) ||
+        (Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
+          anyQueen === this.pickChecker &&
+          !this.checkCheckerPos(checker) &&
+          checker.color &&
+          this.pickChecker !== checker)
+      ) {
+        this.closedStepFriendlyForQueen.push(checker);
+        this.reuslt = [];
+        this.filterFriendlyItems();
+      }
+    },
+    test1(checker, anyQueen) {
+      if (anyQueen.id < Math.min.apply(null, this.reuslt)) {
+        if (
+          checker.id < Math.min.apply(null, this.reuslt) &&
+          Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
+          anyQueen === this.pickChecker &&
+          this.checkCheckerPos(checker)
+        ) {
+          checker.canStep = true;
+          return;
+        } else if (
+          anyQueen.id > Math.min.apply(null, this.reuslt)
+        ) {
+          if (
+            checker.id > Math.max.apply(null, this.reuslt) &&
+            Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
+            anyQueen === this.pickChecker &&
+            this.checkCheckerPos(checker)
+          ) {
+            checker.canStep = true;
+            return;
+          }
+        }
+      }
+    },
+    test2(checker, anyQueen) {
+      if (anyQueen.id < Math.min.apply(null, this.reuslt)) {
+        if (
+          checker.id < Math.min.apply(null, this.reuslt) &&
+          Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
+          anyQueen === this.pickChecker &&
+          this.checkCheckerPos(checker)
+        ) {
+          checker.canStep = true;
+          return;
+        } else if (
+          anyQueen.id > Math.min.apply(null, this.reuslt)
+        ) {
+          if (
+            checker.id > Math.max.apply(null, this.reuslt) &&
+            Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
+            anyQueen === this.pickChecker &&
+            this.checkCheckerPos(checker)
+          ) {
+            checker.canStep = true;
+            return;
+          }
+        }
+      }
+    },
+    
     currentTurn() {
-      if(Object.keys(this.multiShotItem).length !== 0) {
+      if (Object.keys(this.multiShotItem).length !== 0) {
         this.currentNumQuere = this.multiShotItem.white === true ? 0 : 1;
         return this.$emit("currentTurn", this.currentNumQuere);
-      }
-      else if (Object.keys(this.multiShotItem).length === 0) {
+      } else if (Object.keys(this.multiShotItem).length === 0) {
         this.currentNumQuere = this.turnItem.white === true ? 0 : 1;
         return this.$emit("currentTurn", this.currentNumQuere);
+      }
+    },
+    filterFriendlyItems() {
+      if (this.pickChecker.black) {
+        this.closedStepFriendlyForQueen.forEach((checker) => {
+          if (checker.black) {
+            this.reuslt.push(checker.id);
+          }
+        });
+      } else if (this.pickChecker.white) {
+        this.closedStepFriendlyForQueen.forEach((checker) => {
+          if (checker.white) {
+            this.reuslt.push(checker.id);
+          }
+        });
       }
     },
     theEndTurn() {
@@ -499,6 +637,7 @@ export default {
         }
       });
       this.multiShotItem = {};
+      this.closedStepForQueen = [];
       this.endTurn = !this.endTurn;
     },
   },
@@ -515,11 +654,8 @@ export default {
   async mounted() {
     await this.GET_CHECKERSCELL_FROM_API();
     this.startOrRestartGame();
-  
-    
   },
   watch: {
-
     endTurn() {
       this.turn += 1;
       this.checkMultiShot();
@@ -540,7 +676,6 @@ export default {
         }
       });
     },
-   
   },
 };
 </script>
