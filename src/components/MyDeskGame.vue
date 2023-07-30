@@ -68,7 +68,7 @@ export default {
       currentNumQuere: 1,
       closedStepForQueen: [],
       closedStepFriendlyForQueen: [],
-      reuslt: [],
+      filtredFriendlyItems: [],
     };
   },
   methods: {
@@ -172,12 +172,17 @@ export default {
       if (!this.checkCheckerPos(handlerCell)) return;
       if (
         this.pickChecker.queen &&
-        handlerCell.canStep &&
-        this.pickChecker.black
+        handlerCell.canStep 
       ) {
-        console.log("work0");
+        console.log("work0", this.potentialKill);
         this.pickChecker.queen = false;
         handlerCell.queen = true;
+        this.potentialKill.forEach((q) => {
+          console.log(q, 'kill')
+          q.black = false;
+          q.white = false;
+        })
+        
       }
       this.goKillEnemy(handlerCell);
       this.goStepWhite(handlerCell);
@@ -406,25 +411,30 @@ export default {
       });
     },
     findStepForQueen(anyQueen) {
-      this.reuslt = [];
-
+      this.filtredFriendlyItems = [];
       this.CHECKERSCELL.filter((checker) => {
         checker.canStep = false;
         this.checkStepsForQueenFriendly(checker, anyQueen);
         this.findBlockStepsForQueen(checker, anyQueen);
+        console.log('выполняется всегда')
         if (
-          this.reuslt.length !== 0 &&
-          Math.min.apply(null, this.reuslt) <
+          this.filtredFriendlyItems.length !== 0 &&
+          Math.min.apply(null, this.filtredFriendlyItems) <
             Math.min.apply(null, this.closedStepForQueen)
         ) {
-          this.test1(checker, anyQueen);
+          console.log('условие 1')
+          this.friendlyBlockLongItem(checker, anyQueen);
+          this.friendlyBlockShortItem(checker, anyQueen);
         } else if (
-          this.reuslt.length !== 0 &&
-          Math.min.apply(null, this.reuslt) >
+          this.filtredFriendlyItems.length !== 0 &&
+          Math.min.apply(null, this.filtredFriendlyItems) >
             Math.min.apply(null, this.closedStepForQueen)
         ) {
-          this.test2(checker, anyQueen);
+          console.log('условие 2')
+          this.friendlyBlockLongItem(checker, anyQueen);
+          this.friendlyBlockShortItem(checker, anyQueen);
         } else {
+          console.log('условие 3')
           this.findStepLongForQueen(checker, anyQueen);
           this.findStepShortForQueen(checker, anyQueen);
         }
@@ -441,14 +451,6 @@ export default {
           checker.canStep = true;
           return;
         } else if (
-          checker !== this.pickChecker &&
-          checker.black !== anyQueen.black &&
-          Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
-          anyQueen === this.pickChecker &&
-          !this.checkCheckerPos(checker)
-        ) {
-          console.log(checker, "nado kill");
-        } else if (
           anyQueen.id > Math.min.apply(null, this.closedStepForQueen)
         ) {
           if (
@@ -459,14 +461,6 @@ export default {
           ) {
             checker.canStep = true;
             return;
-          } else if (
-            checker !== this.pickChecker &&
-            checker.black !== anyQueen.black &&
-            Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
-            anyQueen === this.pickChecker &&
-            !this.checkCheckerPos(checker)
-          ) {
-            console.log(checker, "nado kill");
           }
         }
       }
@@ -481,14 +475,7 @@ export default {
         ) {
           checker.canStep = true;
           return;
-        } else if (
-          checker.id < Math.max.apply(null, this.closedStepForQueen) &&
-          Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
-          anyQueen === this.pickChecker &&
-          !this.checkCheckerPos(checker)
-        ) {
-          console.log(checker, "nado kill");
-        } else if (
+        }  else if (
           anyQueen.id > Math.min.apply(null, this.closedStepForQueen)
         ) {
           if (
@@ -499,13 +486,6 @@ export default {
           ) {
             checker.canStep = true;
             return;
-          } else if (
-            checker.id > Math.max.apply(null, this.closedStepForQueen) &&
-            Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
-            anyQueen === this.pickChecker &&
-            !this.checkCheckerPos(checker)
-          ) {
-            console.log(checker, "nado kill");
           }
         }
       }
@@ -519,7 +499,10 @@ export default {
         this.pickChecker !== checker &&
         anyQueen.black !== checker.black
       ) {
+       
         this.blockStepsForQueen(checker, "short");
+        this.potentialKillCheckerForQueen(checker, "short")
+        
       } else if (
         Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
         anyQueen === this.pickChecker &&
@@ -528,14 +511,16 @@ export default {
         this.pickChecker !== checker &&
         anyQueen.black !== checker.black
       ) {
+        
         this.blockStepsForQueen(checker, "long");
+        this.potentialKillCheckerForQueen(checker, "long")
       }
     },
-    blockStepsForQueen(itemKill, distance) {
-      const longMinusId = itemKill.id - this.longDistance;
-      const longPlusId = itemKill.id + this.longDistance;
-      const shortMinusId = itemKill.id - this.shortDistance;
-      const shortPlusId = itemKill.id + this.shortDistance;
+    blockStepsForQueen(itemBlock, distance) {
+      const longMinusId = itemBlock.id - this.longDistance;
+      const longPlusId = itemBlock.id + this.longDistance;
+      const shortMinusId = itemBlock.id - this.shortDistance;
+      const shortPlusId = itemBlock.id + this.shortDistance;
       this.CHECKERSCELL.forEach((checker) => {
         if (
           (distance === "long" &&
@@ -563,8 +548,30 @@ export default {
             this.pickChecker !== checker)
         ) {
           this.closedStepForQueen.push(checker.id);
-        } 
+        }
       });
+      
+    },
+    potentialKillCheckerForQueen(itemKill, distance) {
+      
+      let testQueue = this.pickChecker.id < itemKill.id ? 1 : -1;
+      const longId = itemKill.id + this.longDistance * testQueue;
+     const shortId = itemKill.id + this.shortDistance * testQueue;
+     this.potentialKill = [];
+      // КОСТЫЛЬ, ИБО НЕ УСПЕВАЕТ ПРИМЕНИНТСЯ canStep = true ко всем элементам, надо искать проблемы
+      setTimeout(() => {
+        console.log(this.potentialKill)
+        this.CHECKERSCELL.forEach((checker) => {
+        if (checker.canStep && checker.id === longId && distance === 'long') {
+          console.log(checker, "tvar");
+          this.potentialKill.push(itemKill);
+        } else if (checker.canStep && checker.id === shortId && distance === 'short') {
+          console.log(checker, 'tvar2')
+          this.potentialKill.push(itemKill);
+        }
+      });
+      }, 500)
+     
     },
     checkStepsForQueenFriendly(checker, anyQueen) {
       if (
@@ -584,49 +591,53 @@ export default {
         this.filterFriendlyItems();
       }
     },
-    test1(checker, anyQueen) {
-      if (anyQueen.id < Math.min.apply(null, this.reuslt)) {
+    friendlyBlockLongItem(checker, anyQueen) {
+      if (anyQueen.id < Math.min.apply(null, this.filtredFriendlyItems)) {
         if (
-          checker.id < Math.min.apply(null, this.reuslt) &&
+          checker.id < Math.min.apply(null, this.filtredFriendlyItems) &&
           Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
           anyQueen === this.pickChecker &&
           this.checkCheckerPos(checker)
         ) {
-          console.log(checker, "test1");
           checker.canStep = true;
           return;
-        } else if (anyQueen.id > Math.min.apply(null, this.reuslt)) {
+        } else if (
+          anyQueen.id > Math.min.apply(null, this.filtredFriendlyItems)
+        ) {
           if (
-            checker.id > Math.max.apply(null, this.reuslt) &&
+            checker.id > Math.max.apply(null, this.filtredFriendlyItems) &&
             Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
             anyQueen === this.pickChecker &&
             this.checkCheckerPos(checker)
           ) {
-            console.log(checker, "test11");
             checker.canStep = true;
             return;
           }
         }
       }
     },
-    test2(checker, anyQueen) {
-      if (anyQueen.id < Math.min.apply(null, this.reuslt)) {
+    friendlyBlockShortItem(checker, anyQueen) {
+      if (anyQueen.id < Math.min.apply(null, this.filtredFriendlyItems)) {
         if (
-          checker.id < Math.min.apply(null, this.reuslt) &&
+          checker.id < Math.min.apply(null, this.filtredFriendlyItems) &&
           Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
           anyQueen === this.pickChecker &&
           this.checkCheckerPos(checker)
         ) {
           checker.canStep = true;
+          console.log('rabotay')
           return;
-        } else if (anyQueen.id > Math.min.apply(null, this.reuslt)) {
+        } else if (
+          anyQueen.id > Math.min.apply(null, this.filtredFriendlyItems)
+        ) {
           if (
-            checker.id > Math.max.apply(null, this.reuslt) &&
+            checker.id > Math.max.apply(null, this.filtredFriendlyItems) &&
             Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
             anyQueen === this.pickChecker &&
             this.checkCheckerPos(checker)
           ) {
             checker.canStep = true;
+            console.log('rabotay2')
             return;
           }
         }
@@ -643,17 +654,17 @@ export default {
       }
     },
     filterFriendlyItems() {
-      this.reuslt = [];
+      this.filtredFriendlyItems = [];
       if (this.pickChecker.black) {
         this.closedStepFriendlyForQueen.forEach((checker) => {
           if (checker.black) {
-            this.reuslt.push(checker.id);
+            this.filtredFriendlyItems.push(checker.id);
           }
         });
       } else if (this.pickChecker.white) {
         this.closedStepFriendlyForQueen.forEach((checker) => {
           if (checker.white) {
-            this.reuslt.push(checker.id);
+            this.filtredFriendlyItems.push(checker.id);
           }
         });
       }
@@ -670,7 +681,8 @@ export default {
       });
       this.multiShotItem = {};
       this.closedStepForQueen = [];
-      this.reuslt = [];
+      this.filtredFriendlyItems = [];
+      this.potentialKill = [];
       this.endTurn = !this.endTurn;
     },
   },
