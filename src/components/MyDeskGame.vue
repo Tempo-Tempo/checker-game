@@ -66,7 +66,8 @@ export default {
       forBlackQueens: [],
       turnItem: {},
       currentNumQuere: 1,
-      closedStepForQueen: [],
+      closedStepForQueenLong: [],
+      closedStepForQueenShort: [],
       closedStepFriendlyForQueen: [],
       filtredFriendlyItems: [],
     };
@@ -79,7 +80,6 @@ export default {
       "CLEAR_DEAD_CHECKER",
     ]),
     nextTurn() {
-      console.log(this.multiShotItem);
       if (this.pickChecker.black) {
         this.queue === "white";
         this.pickChecker.pick = false;
@@ -170,19 +170,15 @@ export default {
     goTurn(handlerCell) {
       console.log(handlerCell);
       if (!this.checkCheckerPos(handlerCell)) return;
-      if (
-        this.pickChecker.queen &&
-        handlerCell.canStep 
-      ) {
+      if (this.pickChecker.queen && handlerCell.canStep) {
         console.log("work0", this.potentialKill);
         this.pickChecker.queen = false;
         handlerCell.queen = true;
         this.potentialKill.forEach((q) => {
-          console.log(q, 'kill')
+          console.log(q, "kill");
           q.black = false;
           q.white = false;
-        })
-        
+        });
       }
       this.goKillEnemy(handlerCell);
       this.goStepWhite(handlerCell);
@@ -201,7 +197,8 @@ export default {
         checker.canShot = false;
         checker.pick = false;
         if (checker.queen && checker.black) {
-          this.findStepForQueen(checker);
+         return this.findStepForQueen(checker);
+          
         } else if (checker === this.pickChecker && checker.black) {
           checker.pick = true;
           this.findStep();
@@ -219,7 +216,8 @@ export default {
         checker.canShot = false;
         checker.pick = false;
         if (checker.queen && checker.white) {
-          this.findStepForQueen(checker);
+          return this.findStepForQueen(checker);
+  
         } else if (checker === this.pickChecker && checker.white) {
           checker.pick = true;
           this.findStep();
@@ -411,84 +409,101 @@ export default {
       });
     },
     findStepForQueen(anyQueen) {
-      this.filtredFriendlyItems = [];
       this.CHECKERSCELL.filter((checker) => {
+        this.filtredFriendlyItems = [];
         checker.canStep = false;
         this.checkStepsForQueenFriendly(checker, anyQueen);
         this.findBlockStepsForQueen(checker, anyQueen);
-        console.log('выполняется всегда')
-        if (
-          this.filtredFriendlyItems.length !== 0 &&
-          Math.min.apply(null, this.filtredFriendlyItems) <
-            Math.min.apply(null, this.closedStepForQueen)
-        ) {
-          console.log('условие 1')
-          this.friendlyBlockLongItem(checker, anyQueen);
-          this.friendlyBlockShortItem(checker, anyQueen);
-        } else if (
-          this.filtredFriendlyItems.length !== 0 &&
-          Math.min.apply(null, this.filtredFriendlyItems) >
-            Math.min.apply(null, this.closedStepForQueen)
-        ) {
-          console.log('условие 2')
-          this.friendlyBlockLongItem(checker, anyQueen);
-          this.friendlyBlockShortItem(checker, anyQueen);
-        } else {
-          console.log('условие 3')
-          this.findStepLongForQueen(checker, anyQueen);
-          this.findStepShortForQueen(checker, anyQueen);
-        }
+
+        // if (
+        //   this.filtredFriendlyItems.length !== 0 &&
+        //   Math.min.apply(null, this.filtredFriendlyItems) <
+        //     Math.min.apply(null, this.closedStepForQueen)
+        // ) {
+
+        this.friendlyBlockLongItem(checker, anyQueen);
+        this.friendlyBlockShortItem(checker, anyQueen);
+        // } else if (
+        //   this.filtredFriendlyItems.length !== 0 &&
+        //   Math.min.apply(null, this.filtredFriendlyItems) >
+        //     Math.min.apply(null, this.closedStepForQueen)
+        // ) {
+        // console.log('условие 2')
+        // this.friendlyBlockLongItem(checker, anyQueen);
+        // this.friendlyBlockShortItem(checker, anyQueen);
+        // } else {
+
+        this.findStepLongForQueen(checker, anyQueen);
+        this.findStepShortForQueen(checker, anyQueen);
+        //}
       });
     },
     findStepLongForQueen(checker, anyQueen) {
-      if (anyQueen.id < Math.min.apply(null, this.closedStepForQueen)) {
-        if (
-          checker.id < Math.min.apply(null, this.closedStepForQueen) &&
-          Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
-          anyQueen === this.pickChecker &&
-          this.checkCheckerPos(checker)
-        ) {
-          checker.canStep = true;
-          return;
-        } else if (
-          anyQueen.id > Math.min.apply(null, this.closedStepForQueen)
-        ) {
+      setTimeout(() => {
+        console.log(this.closedStepForQueenLong, "long");
+        if (anyQueen.id < Math.min.apply(null, this.closedStepForQueenLong)) {
           if (
-            checker.id > Math.max.apply(null, this.closedStepForQueen) &&
+            checker.id < Math.min.apply(null, this.closedStepForQueenLong) &&
             Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
             anyQueen === this.pickChecker &&
             this.checkCheckerPos(checker)
           ) {
             checker.canStep = true;
             return;
+          } else if (
+            anyQueen.id > Math.min.apply(null, this.closedStepForQueenLong)
+          ) {
+            if (
+              checker.id > Math.max.apply(null, this.closedStepForQueenLong) &&
+              Number.isInteger(
+                (checker.id - anyQueen.id) / this.longDistance
+              ) &&
+              anyQueen === this.pickChecker &&
+              this.checkCheckerPos(checker)
+            ) {
+              checker.canStep = true;
+              return;
+            }
           }
         }
-      }
+      }, 200);
     },
     findStepShortForQueen(checker, anyQueen) {
-      if (anyQueen.id < Math.min.apply(null, this.closedStepForQueen)) {
+      setTimeout(() => {
+        // console.log(this.closedStepForQueenShort, "short");
+        // console.log(
+        //   anyQueen.id < Math.min.apply(null, this.closedStepForQueenShort),
+        //   "1short",
+        //   anyQueen.id,
+        //   "<",
+        //   Math.min.apply(null, this.closedStepForQueenShort)
+        // );
+        // console.log(
+        //   anyQueen.id > Math.max.apply(null, this.closedStepForQueenShort),"2short",
+        //   anyQueen.id,">", Math.max.apply(null, this.closedStepForQueenShort)
+        // );
+
+       
         if (
-          checker.id < Math.min.apply(null, this.closedStepForQueen) &&
+          checker.id < Math.min.apply(null, this.closedStepForQueenShort) &&
           Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
           anyQueen === this.pickChecker &&
           this.checkCheckerPos(checker)
         ) {
+         
           checker.canStep = true;
-          return;
-        }  else if (
-          anyQueen.id > Math.min.apply(null, this.closedStepForQueen)
-        ) {
-          if (
-            checker.id > Math.max.apply(null, this.closedStepForQueen) &&
-            Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
-            anyQueen === this.pickChecker &&
-            this.checkCheckerPos(checker)
-          ) {
-            checker.canStep = true;
-            return;
-          }
         }
-      }
+
+        if (
+          checker.id > Math.max.apply(null, this.closedStepForQueenShort) &&
+          Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
+          anyQueen === this.pickChecker &&
+          this.checkCheckerPos(checker)
+        ) {
+          
+          checker.canStep = true;
+        }
+      }, 200);
     },
     findBlockStepsForQueen(checker, anyQueen) {
       if (
@@ -499,10 +514,8 @@ export default {
         this.pickChecker !== checker &&
         anyQueen.black !== checker.black
       ) {
-       
         this.blockStepsForQueen(checker, "short");
-        this.potentialKillCheckerForQueen(checker, "short")
-        
+        this.potentialKillCheckerForQueen(checker, "short");
       } else if (
         Number.isInteger((checker.id - anyQueen.id) / this.longDistance) &&
         anyQueen === this.pickChecker &&
@@ -511,9 +524,8 @@ export default {
         this.pickChecker !== checker &&
         anyQueen.black !== checker.black
       ) {
-        
         this.blockStepsForQueen(checker, "long");
-        this.potentialKillCheckerForQueen(checker, "long")
+        this.potentialKillCheckerForQueen(checker, "long");
       }
     },
     blockStepsForQueen(itemBlock, distance) {
@@ -534,7 +546,7 @@ export default {
             checker.color &&
             this.pickChecker !== checker)
         ) {
-          this.closedStepForQueen.push(checker.id);
+          this.closedStepForQueenLong.push(checker.id);
         } else if (
           (distance === "short" &&
             checker.id === shortMinusId &&
@@ -547,31 +559,32 @@ export default {
             checker.color &&
             this.pickChecker !== checker)
         ) {
-          this.closedStepForQueen.push(checker.id);
+          this.closedStepForQueenShort.push(checker.id);
         }
       });
-      
     },
     potentialKillCheckerForQueen(itemKill, distance) {
-      
       let testQueue = this.pickChecker.id < itemKill.id ? 1 : -1;
       const longId = itemKill.id + this.longDistance * testQueue;
-     const shortId = itemKill.id + this.shortDistance * testQueue;
-     this.potentialKill = [];
+      const shortId = itemKill.id + this.shortDistance * testQueue;
+      this.potentialKill = [];
       // КОСТЫЛЬ, ИБО НЕ УСПЕВАЕТ ПРИМЕНИНТСЯ canStep = true ко всем элементам, надо искать проблемы
       setTimeout(() => {
-        console.log(this.potentialKill)
+        console.log(this.potentialKill);
         this.CHECKERSCELL.forEach((checker) => {
-        if (checker.canStep && checker.id === longId && distance === 'long') {
-          console.log(checker, "tvar");
-          this.potentialKill.push(itemKill);
-        } else if (checker.canStep && checker.id === shortId && distance === 'short') {
-          console.log(checker, 'tvar2')
-          this.potentialKill.push(itemKill);
-        }
-      });
-      }, 500)
-     
+          if (checker.canStep && checker.id === longId && distance === "long") {
+            console.log(checker, "tvar");
+            this.potentialKill.push(itemKill);
+          } else if (
+            checker.canStep &&
+            checker.id === shortId &&
+            distance === "short"
+          ) {
+            console.log(checker, "tvar2");
+            this.potentialKill.push(itemKill);
+          }
+        });
+      }, 500);
     },
     checkStepsForQueenFriendly(checker, anyQueen) {
       if (
@@ -599,7 +612,8 @@ export default {
           anyQueen === this.pickChecker &&
           this.checkCheckerPos(checker)
         ) {
-          checker.canStep = true;
+          console.log("work", checker);
+
           return;
         } else if (
           anyQueen.id > Math.min.apply(null, this.filtredFriendlyItems)
@@ -610,14 +624,18 @@ export default {
             anyQueen === this.pickChecker &&
             this.checkCheckerPos(checker)
           ) {
-            checker.canStep = true;
+            console.log("work2", checker);
+
             return;
           }
         }
       }
     },
     friendlyBlockShortItem(checker, anyQueen) {
-      if (anyQueen.id < Math.min.apply(null, this.filtredFriendlyItems)) {
+      if (
+        anyQueen.id < Math.min.apply(null, this.filtredFriendlyItems) &&
+        this.filterFriendlyItems.length !== 0
+      ) {
         if (
           checker.id < Math.min.apply(null, this.filtredFriendlyItems) &&
           Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
@@ -625,10 +643,14 @@ export default {
           this.checkCheckerPos(checker)
         ) {
           checker.canStep = true;
-          console.log('rabotay')
+          console.log("rabotay");
           return;
         } else if (
-          anyQueen.id > Math.min.apply(null, this.filtredFriendlyItems)
+          anyQueen.id >
+          Math.min.apply(
+            null,
+            this.filtredFriendlyItems && this.filterFriendlyItems.length !== 0
+          )
         ) {
           if (
             checker.id > Math.max.apply(null, this.filtredFriendlyItems) &&
@@ -637,7 +659,7 @@ export default {
             this.checkCheckerPos(checker)
           ) {
             checker.canStep = true;
-            console.log('rabotay2')
+            console.log("rabotay2");
             return;
           }
         }
@@ -680,7 +702,8 @@ export default {
         }
       });
       this.multiShotItem = {};
-      this.closedStepForQueen = [];
+      this.closedStepForQueenLong = [];
+      this.closedStepForQueenShort = [];
       this.filtredFriendlyItems = [];
       this.potentialKill = [];
       this.endTurn = !this.endTurn;
@@ -715,6 +738,7 @@ export default {
     },
     pickChecker() {
       this.helperTurn = this.pickChecker;
+
       this.CHECKERSCELL.forEach((checker) => {
         if (checker.id === this.pickChecker.id) {
           checker.pick = true;
