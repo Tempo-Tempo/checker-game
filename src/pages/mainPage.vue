@@ -1,8 +1,8 @@
 <template>
    <div class="bg_for_desk">
-      <my-desk-game @currentTurn="currentTurn"></my-desk-game>
+      <my-desk-game @currentTurn="currentTurn" @startTimer="startTimerGame" @restartTimerGame="restartTimerGame"></my-desk-game>
       <kills-counter></kills-counter>
-      <track-for-quere :currentTurn="turnName"></track-for-quere>
+      <track-for-quere :currentTurn="turnName" :startTimer="startTimer" :restartTimer="restartTimer"></track-for-quere>
    </div>
 </template>
 <script>
@@ -13,12 +13,20 @@ export default {
    data() {
       return {
          turnName: 1,
+         startTimer: false,
+         restartTimer: false,
       }
    }, 
    methods: {
       currentTurn(num) {
          this.turnName = num;
       },
+      startTimerGame() {
+         this.startTimer = !this.startTimer;
+      },
+      restartTimerGame() {
+         this.restartTimer = !this.restartTimer;
+      }
    }
 }
 </script>

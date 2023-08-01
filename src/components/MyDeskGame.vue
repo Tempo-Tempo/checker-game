@@ -35,10 +35,9 @@
   </div>
 
   <div class="area_for_btn_new_game">
-    <my-buttons @anyClick="startOrRestartGame((turn = 1))"
+    <my-buttons @anyClick="startOrRestartGame((turn = 1)), this.$emit('restartTimerGame')"
       >Новая игра</my-buttons
     >
-    <div>{{ turnName }}</div>
   </div>
 </template>
 
@@ -197,8 +196,7 @@ export default {
         checker.canShot = false;
         checker.pick = false;
         if (checker.queen && checker.black) {
-         return this.findStepForQueen(checker);
-          
+          return this.findStepForQueen(checker);
         } else if (checker === this.pickChecker && checker.black) {
           checker.pick = true;
           this.findStep();
@@ -217,7 +215,6 @@ export default {
         checker.pick = false;
         if (checker.queen && checker.white) {
           return this.findStepForQueen(checker);
-  
         } else if (checker === this.pickChecker && checker.white) {
           checker.pick = true;
           this.findStep();
@@ -483,25 +480,26 @@ export default {
         //   anyQueen.id,">", Math.max.apply(null, this.closedStepForQueenShort)
         // );
 
-       
-        if (
-          checker.id < Math.min.apply(null, this.closedStepForQueenShort) &&
-          Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
-          anyQueen === this.pickChecker &&
-          this.checkCheckerPos(checker)
+        if (anyQueen.id < Math.min.apply(null, this.closedStepForQueenShort)) {
+          if (
+            checker.id < Math.min.apply(null, this.closedStepForQueenShort) &&
+            Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
+            anyQueen === this.pickChecker &&
+            this.checkCheckerPos(checker)
+          ) {
+            checker.canStep = true;
+          }
+        } else if (
+          anyQueen.id > Math.max.apply(null, this.closedStepForQueenShort)
         ) {
-         
-          checker.canStep = true;
-        }
-
-        if (
-          checker.id > Math.max.apply(null, this.closedStepForQueenShort) &&
-          Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
-          anyQueen === this.pickChecker &&
-          this.checkCheckerPos(checker)
-        ) {
-          
-          checker.canStep = true;
+          if (
+            checker.id > Math.max.apply(null, this.closedStepForQueenShort) &&
+            Number.isInteger((checker.id - anyQueen.id) / this.shortDistance) &&
+            anyQueen === this.pickChecker &&
+            this.checkCheckerPos(checker)
+          ) {
+            checker.canStep = true;
+          }
         }
       }, 200);
     },
@@ -738,7 +736,9 @@ export default {
     },
     pickChecker() {
       this.helperTurn = this.pickChecker;
-
+      if(this.turn === 1) {
+        this.$emit('startTimer')
+      }
       this.CHECKERSCELL.forEach((checker) => {
         if (checker.id === this.pickChecker.id) {
           checker.pick = true;
