@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "axios"; 
 import { createStore } from "vuex";
 
 const store = createStore({
@@ -49,7 +49,7 @@ const store = createStore({
       },
       CLEAR_DEAD_CHECKER({commit}) {
          commit('SET_CLEAR_DEAD_CHECKERS');
-      }
+      },
    },
    getters: {
       CHECKERSCELL(state) {

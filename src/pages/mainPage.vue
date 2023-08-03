@@ -1,11 +1,14 @@
 <template>
    <div class="bg_for_desk">
+     
       <my-desk-game @currentTurn="currentTurn" @startTimer="startTimerGame" @restartTimerGame="restartTimerGame"></my-desk-game>
       <kills-counter></kills-counter>
       <track-for-quere :currentTurn="turnName" :startTimer="startTimer" :restartTimer="restartTimer"></track-for-quere>
+      
    </div>
 </template>
 <script>
+
 
 
 export default {

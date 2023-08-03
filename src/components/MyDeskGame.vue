@@ -26,7 +26,7 @@
   </div>
   <my-buttons
     v-if="Object.keys(this.multiShotItem).length !== 0"
-    @anyClick="nextTurn((turn += 1))"
+    @anyClick="nextTurn((turn += 1)), currentTurn()"
   >
     Закончить ход
   </my-buttons>
@@ -35,10 +35,16 @@
   </div>
 
   <div class="area_for_btn_new_game">
-    <my-buttons @anyClick="startOrRestartGame((turn = 1)), this.$emit('restartTimerGame')"
+    <my-buttons
+      @anyClick="
+        startOrRestartGame((turn = 1)),
+          this.$emit('restartTimerGame'),
+          this.$emit('currentTurn', 1)
+      "
       >Новая игра</my-buttons
     >
   </div>
+  <the-game-over @restartGame="startOrRestartGame(turn = 1)"></the-game-over>
 </template>
 
 <script>
@@ -59,7 +65,6 @@ export default {
       shortDistance: 7,
       multiShotItem: {},
       pickedCheckerAfterMultiShot: {},
-      turnName: "Очередь белых",
       helperTurn: {},
       forWhiteQueens: [],
       forBlackQueens: [],
@@ -372,15 +377,13 @@ export default {
     },
     startOrRestartGame() {
       if (this.turn === 1) {
-        this.queue = "white";
+        this.clearFullBoard();
         this.CLEAR_DEAD_CHECKER();
-        this.multiShotItem = {};
         this.CHECKERSCELL.forEach((checkerCell) => {
           checkerCell.canShot = false;
           checkerCell.canStep = false;
           checkerCell.pick = false;
           checkerCell.queen = false;
-          this.turnName = "Очередь белых";
           if (checkerCell.row <= 3 && checkerCell.color) {
             checkerCell.black = true;
             checkerCell.white = false;
@@ -393,6 +396,24 @@ export default {
           }
         });
       }
+    },
+    clearFullBoard(){
+      this.queue = "white";
+      this.pickChecker = "";
+      this.youCanGo = [];
+      this.potentialShot = [];
+      this.potentialKill = [];
+      this.multiShotItem = {};
+      this.pickedCheckerAfterMultiShot = {};
+      this.helperTurn = {};
+      this.forWhiteQueens = [];
+      this.forBlackQueens = [];
+      this.turnItem = {};
+      this.currentNumQuere = 1;
+      this.closedStepForQueenLong = [];
+      this.closedStepForQueenShort = [];
+      this.closedStepFriendlyForQueen = [];
+      this.filtredFriendlyItems = [];
     },
     timeToQueen() {
       this.CHECKERSCELL.forEach((checker) => {

@@ -20,7 +20,6 @@
       <span class="text_for_white">Очередь белых</span>
     </div>
   </div>
-  <button @click="setTimerForWhite()">goasdasd</button>
 </template>
 
 <script>
@@ -71,17 +70,20 @@ export default {
       }
     },
     startTimer() {
-      console.log("dura");
+      clearInterval(this.timerWhite);
+      clearInterval(this.timerBlack);
       this.setTimerForWhite();
     },
     restartTimer() {
+      setTimeout(() => {
+        clearInterval(this.timerWhite);
+      clearInterval(this.timerBlack);
       this.timeBlack = 300;
       this.timeWhite = 300;
       this.timerBlack = null;
       this.timerWhite = null;
-      clearInterval(this.timerWhite);
-      clearInterval(this.timerBlack);
-    }
+      }, 1000)
+    },
   },
 };
 </script>
