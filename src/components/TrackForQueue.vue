@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
 export default {
   name: "TrackForQuere",
   data() {
@@ -48,6 +49,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(["GAME_IS_OVER", "CHECK_TIME_CURRENT_WINNER"]),
     setTimerForWhite() {
       this.timerWhite = setInterval(() => {
         this.timeWhite--;
@@ -58,6 +60,13 @@ export default {
         this.timeBlack--;
       }, 1000);
     },
+    clearAllTimer() {
+      clearInterval(this.timerWhite);
+      clearInterval(this.timerBlack);
+    },
+  },
+  computed: {
+    ...mapGetters(["CURRENTWINNER"]),
   },
   watch: {
     currentTurn() {
@@ -70,20 +79,40 @@ export default {
       }
     },
     startTimer() {
-      clearInterval(this.timerWhite);
-      clearInterval(this.timerBlack);
+      this.clearAllTimer();
       this.setTimerForWhite();
     },
     restartTimer() {
       setTimeout(() => {
-        clearInterval(this.timerWhite);
-      clearInterval(this.timerBlack);
-      this.timeBlack = 300;
-      this.timeWhite = 300;
-      this.timerBlack = null;
-      this.timerWhite = null;
-      }, 1000)
+        this.clearAllTimer();
+        this.timeBlack = 300;
+        this.timeWhite = 300;
+        this.timerBlack = null;
+        this.timerWhite = null;
+      }, 1000);
     },
+    timeBlack() {
+      if (this.timeBlack <= 0) {
+        this.CHECK_TIME_CURRENT_WINNER();
+        console.log(this.CURRENTWINNER)
+        this.clearAllTimer();
+      }
+    },
+    timeWhite() {
+      if (this.timeWhite <= 0) {
+        this.CHECK_TIME_CURRENT_WINNER();
+        console.log(this.CURRENTWINNER)
+        this.clearAllTimer();
+      }
+    },
+    CURRENTWINNER() {
+      console.log('nado suda')
+      setTimeout(() => {
+        this.clearAllTimer();
+      }, 200)
+      
+     
+    }
   },
 };
 </script>

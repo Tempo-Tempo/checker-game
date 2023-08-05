@@ -44,7 +44,13 @@
       >Новая игра</my-buttons
     >
   </div>
-  <the-game-over @restartGame="startOrRestartGame(turn = 1)"></the-game-over>
+  <the-game-over
+    @restartGame="
+      startOrRestartGame((turn = 1)),
+        this.$emit('restartTimerGame'),
+        this.$emit('currentTurn', 1)
+    "
+  ></the-game-over>
 </template>
 
 <script>
@@ -82,6 +88,7 @@ export default {
       "PUSH_DEAD_BLACK_CHECKER",
       "PUSH_DEAD_WHITE_CHECKER",
       "CLEAR_DEAD_CHECKER",
+      "CHECK_CURRENT_WINNER"
     ]),
     nextTurn() {
       if (this.pickChecker.black) {
@@ -397,7 +404,7 @@ export default {
         });
       }
     },
-    clearFullBoard(){
+    clearFullBoard() {
       this.queue = "white";
       this.pickChecker = "";
       this.youCanGo = [];
@@ -432,25 +439,8 @@ export default {
         checker.canStep = false;
         this.checkStepsForQueenFriendly(checker, anyQueen);
         this.findBlockStepsForQueen(checker, anyQueen);
-
-        // if (
-        //   this.filtredFriendlyItems.length !== 0 &&
-        //   Math.min.apply(null, this.filtredFriendlyItems) <
-        //     Math.min.apply(null, this.closedStepForQueen)
-        // ) {
-
         this.friendlyBlockLongItem(checker, anyQueen);
         this.friendlyBlockShortItem(checker, anyQueen);
-        // } else if (
-        //   this.filtredFriendlyItems.length !== 0 &&
-        //   Math.min.apply(null, this.filtredFriendlyItems) >
-        //     Math.min.apply(null, this.closedStepForQueen)
-        // ) {
-        // console.log('условие 2')
-        // this.friendlyBlockLongItem(checker, anyQueen);
-        // this.friendlyBlockShortItem(checker, anyQueen);
-        // } else {
-
         this.findStepLongForQueen(checker, anyQueen);
         this.findStepShortForQueen(checker, anyQueen);
         //}
@@ -488,19 +478,6 @@ export default {
     },
     findStepShortForQueen(checker, anyQueen) {
       setTimeout(() => {
-        // console.log(this.closedStepForQueenShort, "short");
-        // console.log(
-        //   anyQueen.id < Math.min.apply(null, this.closedStepForQueenShort),
-        //   "1short",
-        //   anyQueen.id,
-        //   "<",
-        //   Math.min.apply(null, this.closedStepForQueenShort)
-        // );
-        // console.log(
-        //   anyQueen.id > Math.max.apply(null, this.closedStepForQueenShort),"2short",
-        //   anyQueen.id,">", Math.max.apply(null, this.closedStepForQueenShort)
-        // );
-
         if (anyQueen.id < Math.min.apply(null, this.closedStepForQueenShort)) {
           if (
             checker.id < Math.min.apply(null, this.closedStepForQueenShort) &&
@@ -747,6 +724,7 @@ export default {
       this.turn += 1;
       this.checkMultiShot();
       this.timeToQueen();
+      this.CHECK_CURRENT_WINNER();
     },
     youCanGo() {
       this.youCanGo.forEach((checker) => {
@@ -757,8 +735,8 @@ export default {
     },
     pickChecker() {
       this.helperTurn = this.pickChecker;
-      if(this.turn === 1) {
-        this.$emit('startTimer')
+      if (this.turn === 1) {
+        this.$emit("startTimer");
       }
       this.CHECKERSCELL.forEach((checker) => {
         if (checker.id === this.pickChecker.id) {
