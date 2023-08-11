@@ -1,5 +1,7 @@
 # game
 
+https://github.com/Tempo-Tempo/checker-game/assets/108608565/825031ca-f6c4-44c2-bbd0-9ea9727e7adf
+
 ## Project setup
 ```
 npm install
@@ -25,5 +27,5 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 
 
-https://github.com/Tempo-Tempo/checker-game/assets/108608565/825031ca-f6c4-44c2-bbd0-9ea9727e7adf
+
 
